@@ -3,14 +3,32 @@ drop database if exists nursery;
 create database nursery;
 use nursery;
 
+create table store (
+	store_id integer not null AUTO_INCREMENT,
+    number_of_lots integer,
+    phone_no char(10),
+    address varchar(50),
+    primary key(store_id)
+);
+-- Lot table
+create table lot(
+    lot_id integer NOT NULL AUTO_INCREMENT,
+    store_id integer NOT NULL,
+    primary key(lot_id),
+    foreign key(store_id) references store(store_id) ON DELETE CASCADE
+);
+
+
 create table plant (
 	id integer not null AUTO_INCREMENT,
     name varchar(20) not null,
     price decimal(10,2),
     description varchar(50),
     age integer,
+    lot_id integer NOT NULL,
     primary key(id),
-    unique(name)
+    unique(name),
+    foreign key(lot_id) references lot(lot_id) ON DELETE CASCADE
 );
 
 
@@ -23,13 +41,7 @@ create table plant_type (
 );
 
 
-create table store (
-	store_id integer not null AUTO_INCREMENT,
-    number_of_lots integer,
-    phone_no char(10),
-    address varchar(50),
-    primary key(store_id)
-);
+
 
 create table customer (
 	cust_id integer not null AUTO_INCREMENT,
