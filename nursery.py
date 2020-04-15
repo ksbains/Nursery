@@ -30,9 +30,9 @@ def insert_store(number_of_lots, phone_no, address):
 	cursor.execute(sql, data)
 	mydb.commit()
 
-def insert_customer(cust_name, phone_no, address, email_id):
-	sql = "INSERT INTO customer(cust_name, phone_no, address, email_id) VALUES(%s,%s,%s,%s)"
-	data = (cust_name, phone_no, address, email_id)
+def insert_customer(cust_name, cust_username, cust_password, phone_no, address, email_id):
+	sql = "INSERT INTO customer(cust_name,cust_username,cust_password, phone_no, address, email_id) VALUES(%s,%s,%s, %s,%s,%s)"
+	data = (cust_name, cust_username, cust_password phone_no, address, email_id)
 	cursor.execute(sql, data)
 	mydb.commit()
 

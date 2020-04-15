@@ -46,10 +46,13 @@ create table plant_type (
 create table customer (
 	cust_id integer not null AUTO_INCREMENT,
     cust_name varchar(20) not null,
+    cust_username varchar(50) not null,
+    cust_password varchar(50) not null,
     phone_no char(10),
     address varchar(50),
     email_id varchar(20),
-    primary key(cust_id)
+    primary key(cust_id),
+    unique(cust_username),
 );
 
 
@@ -83,6 +86,8 @@ create table order_item (
 create table employee (
 	emp_id integer not null AUTO_INCREMENT,
     emp_name varchar(20) not null,
+    emp_username varchar(50) not null, 
+    emp_password varchar(50) not null,
     store_id integer not null,
     doj date,
     phone_no char(10),
@@ -90,6 +95,7 @@ create table employee (
     supervisor_id integer,
     primary key(emp_id),
     unique(emp_name),
+    unique(emp_username),
     foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );
     
