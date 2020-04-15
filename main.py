@@ -1,5 +1,5 @@
+import nursery
 import inquirer
-#import nursery
 
 
 
@@ -45,19 +45,37 @@ def customerStart():
 def customerSignIn():
 	questions = [
 	  inquirer.Text('username', message="What's your username"),
-	  inquirer.Text('password', message="What's your password"),
+	  inquirer.Text('password', message="What's your password")
 	]
-	answers = inquirer.prompt(questions)
 	
+	answers = inquirer.prompt(questions)
 	custUsername = answers['username']
-	customerPassword = answers['password']
+	custPassword = answers['password']
 
 	# check if the customer is in the DB
+	result = nursery.inCustomer(custUsername)
+	if result == []:
+		print("You are an IMPOSTER!!")
+  		customerStart()
+  	
+  	if result[3] == custPassword:
+  		print("AYE gotta have that customer main doe")
+  	else:
+  		print("Incorrect Password!!! Try again")
+  		customerSignIn()
+
+
+
+	
 
 def customerSignUp():
 	questions = [
+	  inquirer.Text('name', message="What's your Name"),
 	  inquirer.Text('username', message="What's your username"),
 	  inquirer.Text('password', message="What's your password"),
+	  inquirer.Text('phone_no', message="What's your Phone #"),
+	  inquirer.Text('address', message="What's your Address"),
+	  inquirer.Text('email_id', message="What's your email_id")
 	]
 	answers = inquirer.prompt(questions)
 	
@@ -66,23 +84,11 @@ def customerSignUp():
 	
 
 	
-
-
-
-
-
-
-
-
-
-
-
-
 def startScript():
-	nursery.startup()
+	# nursery.startup()
+	# nursery.main()
 	mainMenu()
 
 startScript()
-
 
 

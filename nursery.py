@@ -19,20 +19,20 @@ def insert_plant_type(name, description):
 	cursor.execute(sql, (name, description))
 	mydb.commit()
 
-def insert_lot(store_id):
-	sql = "INSERT INTO lot(store_id) VALUES(%s)"
-	cursor.execute(sql, (store_id,))
-	mydb.commit()
-
 def insert_store(number_of_lots, phone_no, address):
 	sql = "INSERT INTO store(number_of_lots, phone_no, address) VALUES(%s,%s,%s)"
 	data = (number_of_lots, phone_no, address)
 	cursor.execute(sql, data)
 	mydb.commit()
 
+def insert_lot(store_id):
+	sql = "INSERT INTO lot(store_id) VALUES(%s)"
+	cursor.execute(sql, (store_id,))
+	mydb.commit()
+
 def insert_customer(cust_name, cust_username, cust_password, phone_no, address, email_id):
-	sql = "INSERT INTO customer(cust_name,cust_username,cust_password, phone_no, address, email_id) VALUES(%s,%s,%s, %s,%s,%s)"
-	data = (cust_name, cust_username, cust_password phone_no, address, email_id)
+	sql = "INSERT INTO customer(cust_name,cust_username, cust_password, phone_no, address, email_id) VALUES(%s,%s,%s, %s,%s,%s)"
+	data = (cust_name, cust_username, cust_password, phone_no, address, email_id)
 	cursor.execute(sql, data)
 	mydb.commit()
 
@@ -48,9 +48,9 @@ def insert_order_item(order_id, plant_id, price, rating):
 	cursor.execute(sql, data)
 	mydb.commit()
 
-def insert_employee(emp_name, store_id, doj, phone_no, designation, supervisor_id):
-	sql = "INSERT INTO employee(emp_name, store_id, doj, phone_no, designation, supervisor_id) VALUES(%s,%s,%s,%s,%s,%s)"
-	data = (emp_name, store_id, doj, phone_no, designation, supervisor_id)
+def insert_employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id):
+	sql = "INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+	data = (emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id)
 	cursor.execute(sql, data)
 	mydb.commit()
 
@@ -65,6 +65,7 @@ def update_plant_type (type_id,type_name, description):
 	data = (type_name, description,type_id)
 	cursor.execute(sql, data)
 	mydb.commit()
+
 def update_lot(lot_id, store_id):
 	sql = "UPDATE lot SET store_id = %s WHERE lot_id = %s"
 	data = (store_id, lot_id)
@@ -77,9 +78,9 @@ def update_store(store_id, number_of_lots, phone_no, address):
 	cursor.execute(sql, data)
 	mydb.commit()
 
-def update_customer(cust_id, cust_name, phone_no, address, email_id):
-	sql = "UPDATE customer SET cust_name = %s, phone_no = %s, address = %s, email_id = %s WHERE cust_id = %s"
-	data = (cust_name, phone_no, address, email_id, cust_id)
+def update_customer(cust_id, cust_name, cust_username, cust_password, phone_no, address, email_id):
+	sql = "UPDATE customer SET cust_name = %s, cust_username = %s, cust_password = %s, phone_no = %s, address = %s, email_id = %s WHERE cust_id = %s"
+	data = (cust_id, cust_name, cust_username, cust_password, phone_no, address, email_id)
 	cursor.execute(sql, data)
 	mydb.commit()
 
@@ -95,9 +96,9 @@ def update_order_item(item_id, order_id,  plant_id, price, rating,):
 	cursor.execute(sql, data)
 	mydb.commit()
 
-def update_employee(emp_id, emp_name, store_id, doj, phone_no, designation, supervisor_id):
-	sql = "UPDATE employee SET emp_name = %s, store_id = %s, doj = %s, phone_no = %s, designation = %s, supervisor_id = %s WHERE emp_id = %s"
-	data = (emp_name, store_id, doj, phone_no, designation, supervisor_id, emp_id)
+def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id):
+	sql = "UPDATE employee SET emp_name = %s, emp_username = %s, emp_password = %s, store_id = %s, doj = %s, phone_no = %s, designation = %s, supervisor_id = %s WHERE emp_id = %s"
+	data = (emp_id, emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id)
 	cursor.execute(sql, data)
 	mydb.commit()
 
@@ -205,9 +206,28 @@ def getCustomer(cust_id, field):
 		result = cursor.fetchone()
 		switch={
 		"cust_name": result[1],
-		"phone_no": result[2],
-		"address": result[3],
-		"email_id": result[4]
+		"cust_username": result[2],
+		"cust_password": result[3],
+		"phone_no": result[4],
+		"address": result[5],
+		"email_id": result[6]
+		}
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+def getCustomerLogin(username, field):
+	sql = "SELECT * FROM customer WHERE username = %s"
+	try:
+		cursor.execute(sql, (username,))
+		result = cursor.fetchone()
+		switch={
+		"cust_name": result[1],
+		"cust_username": result[2],
+		"cust_password": result[3],
+		"phone_no": result[4],
+		"address": result[5],
+		"email_id": result[6]
 		}
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
@@ -252,11 +272,32 @@ def getEmployee(emp_id, field):
 		result = cursor.fetchone()
 		switch={
 		"emp_name": result[1],
-		"store_id": result[2],
-		"doj": result[3],
-		"phone_no": result[4],
-		"designation": result[5],
-		"supervisor_id": result[6]
+		"emp_username": result[2],
+		"emp_password": result[3],
+		"store_id": result[4],
+		"doj": result[5],
+		"phone_no": result[6],
+		"designation": result[7],
+		"supervisor_id": result[8]
+		}
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+def getEmployeeLogin(username, field):
+	sql = "SELECT * FROM employee WHERE emp_username = %s"
+	try:
+		cursor.execute(sql, (username,))
+		result = cursor.fetchone()
+		switch={
+		"emp_name": result[1],
+		"emp_username": result[2],
+		"emp_password": result[3],
+		"store_id": result[4],
+		"doj": result[5],
+		"phone_no": result[6],
+		"designation": result[7],
+		"supervisor_id": result[8]
 		}
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
@@ -344,6 +385,24 @@ def employees():
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
+def inEmployee(username):
+	sql = "SELECT * FROM employee WHERE emp_username = %s"
+	try:
+		cursor.execute(sql, (username,))
+		result = cursor.fetchall()
+		print(result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+def inCustomer(username):
+	sql = "SELECT * FROM customer WHERE cust_username = %s"
+	try:
+		cursor.execute(sql, (username,))
+		result = cursor.fetchone()
+		return result
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
 def startup():
 	#STORE
 	storeLots = 50
@@ -366,6 +425,8 @@ def startup():
 
 	#CUSTOMER
 	customerName = "jeff"
+	customerUserName = "jefe"
+	customerPassword = "myNameJeff"
 	customerPhoneNo = "0123456789"
 	customerAddress = "1234 Robin Wy."
 	customerEmail = "jeff@gmail.com"
@@ -386,6 +447,8 @@ def startup():
 
 	#EMPLOYEE
 	EmployeeName = "Bee"
+	EmployeeUserName = "killabee"
+	EmployeePassword = "password"
 	EmployeeStoreId = 1
 	EmployeeDOJ = "2000-01-25"
 	EmployeePhoneNo = "0123456789"
@@ -397,10 +460,10 @@ def startup():
 	insert_lot(lotStoreId)
 	insert_plant(plantName, plantPrice, plantDescription, plantAge, plantLotId)
 	insert_plant_type(plantTypeName, plantTypeDescription)
-	insert_customer(customerName, customerPhoneNo, customerAddress, customerEmail)
+	insert_customer(customerName, customerUserName, customerPassword, customerPhoneNo, customerAddress, customerEmail)
 	insert_orders(OrderStoreId, OrderCustId, OrderType, OrderPaymentStatus, OrderPrice, OrderDeliveryAddress)
 	insert_order_item(OrderID, OrderPlantID, OrderItemPrice, OrderRating)
-	insert_employee(EmployeeName, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, EmployeeSupervisor)
+	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, EmployeeSupervisor)
 
 #---------------------------------------------------------------------------------TEST SCRIPTS--------------------------------------------------------
 def main():
@@ -424,6 +487,8 @@ def main():
 	
 	print("------------------CUSTOMER---------------------------")
 	print("Customer Name is: " + getCustomer(1, "cust_name"))
+	print("Customer UserName is: " + getCustomer(1, "cust_username"))
+	print("Customer Password is: " + getCustomer(1, "cust_password"))
 	print("Customer Phone Number is: " + getCustomer(1, "phone_no"))
 	print("Customer Address is: " + getCustomer(1, "address"))
 	print("Customer Email is: " + getCustomer(1, "email_id"))
@@ -444,6 +509,8 @@ def main():
 	
 	print("-------------------------EMPLOYEE-------------------------")	
 	print("Employee Name is: " + getEmployee(1, "emp_name"))
+	print("Employee UserName is: " + getEmployee(1, "emp_username"))
+	print("Employee Password is: " + getEmployee(1, "emp_password"))
 	print("Employee Store Id is: " + str(getEmployee(1, "store_id")))
 	print("Employee DOJ is: " + str(getEmployee(1, "doj")))
 	print("Employee Phone Number is: " + getEmployee(1, "phone_no"))
@@ -456,11 +523,11 @@ def main():
 	update_lot(1, 1)
 	update_plant(1, "King Plam", 47, "Royal Palm", 24)
 	update_plant_type(1, "StillTree",  "TallTree")
-	
-	update_customer(1, "Bob", "9876543210", "4321 Batman Cv", "Bob@yahoo.com")
+
+	update_customer(1, "Bob", "Bobdat", "pass", "9876543210", "4321 Batman Cv", "Bob@yahoo.com")
 	update_orders(1,1,1, "double", "Payment Due", 666.21, "57312 treeapple Wy.")
 	update_order_item(1,1,1, 432, 6.7)
-	update_employee(1, "Lebron James", 1, "2020-01-26", "9876543210", "KingJames", 7)
+	update_employee(1, "Lebron James","KingLBJ", "bronny", 1, "2020-01-26", "9876543210", "KingJames", 7)
 
 	#------------------------------------AFTER UPDATE----------------------------------------------------
 
@@ -475,22 +542,23 @@ def main():
 	print("Lot StoreId is: " + str(getLot(1, "store_id")))
 
 	print("-----------------PLANT TABLE-----------------")
-	plants()
 	print("Plant name is: " + getPlant(1, "name"))
 	print("Plant price is: " + str(getPlant(1, "price")))
 	print("Plant description is: " + getPlant(1, "description"))
 	print("Plant age is: " + str(getPlant(1, "age")))
-	
+
 	print("------------------PLANT TYPE------------------")
-	plantTypes()
 	print("PlantType name is: " + getPlantType(1, "type_name"))
 	print("PlantType description is: " + getPlantType(1, "description"))
-	
+
 	print("------------------CUSTOMER---------------------------")
 	print("Customer Name is: " + getCustomer(1, "cust_name"))
+	print("Customer UserName is: " + getCustomer(1, "cust_username"))
+	print("Customer Password is: " + getCustomer(1, "cust_password"))
 	print("Customer Phone Number is: " + getCustomer(1, "phone_no"))
 	print("Customer Address is: " + getCustomer(1, "address"))
 	print("Customer Email is: " + getCustomer(1, "email_id"))
+
 	print("-------------------------ORDERS-------------------------")
 	print("Orders StoreId is: " + str(getOrders(1, "store_id")))
 	print("Orders CustomerId is: " + str(getOrders(1, "cust_id")))
@@ -498,13 +566,17 @@ def main():
 	print("Orders Payment Status is: " + getOrders(1, "payment_status"))
 	print("Orders Price is: " + str(getOrders(1, "price")))
 	print("Orders Delivery Address is: " + getOrders(1, "delivery_address"))
+
 	print("-------------------------ORDER ITEM-------------------------")
 	print("OrderItem OrderId is: " + str(getOrderItem(1, "order_id")))
 	print("OrderItem PlantId is: " + str(getOrderItem(1, "plant_id")))
 	print("OrderItem Price is: " + str(getOrderItem(1, "price")))
 	print("OrderItem Rating is: " + str(getOrderItem(1, "rating"))	)
+
 	print("-------------------------EMPLOYEE-------------------------")	
 	print("Employee Name is: " + getEmployee(1, "emp_name"))
+	print("Employee UserName is: " + getEmployee(1, "emp_username"))
+	print("Employee Password is: " + getEmployee(1, "emp_password"))
 	print("Employee Store Id is: " + str(getEmployee(1, "store_id")))
 	print("Employee DOJ is: " + str(getEmployee(1, "doj")))
 	print("Employee Phone Number is: " + getEmployee(1, "phone_no"))
