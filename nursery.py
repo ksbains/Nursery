@@ -389,8 +389,8 @@ def inEmployee(username):
 	sql = "SELECT * FROM employee WHERE emp_username = %s"
 	try:
 		cursor.execute(sql, (username,))
-		result = cursor.fetchall()
-		print(result)
+		result = cursor.fetchone()
+		return result
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
