@@ -50,7 +50,7 @@ def employeeSignIn():
                 if not result[8]:
                         employeeManagerMainMenu(result[0], result[4])
                 else:
-                        employeeCommonMainMenu(result[0])
+                        employeeCommonMainMenu(result[0], result[4])
 
         else:
                 print("Incorrect Password!!! Try again")
@@ -63,15 +63,16 @@ def employeeManagerMainMenu(empID, storeID):
                 choices=['Inventory', 'Manage Employees', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
-        
-        switch={
-                "Inventory": inventory(empId, storeID),
-                "Manage Employees": manageEmp(empID),
-                "Logout": employeeStart()
-        }
-        switch.get(answer["employeeMain"], "NOT FOUND")
+        if answer["employeeMain"] == "Inventory": 
+                inventory(empID)
+        elif answer["employeeMain"] == "Manage Employees":
+                manageEmp(empID)
+        elif answer["employeeMain"] == "Logout":
+                 employeeStart()
+        else:
+                print("ERROR!!! SHOULD NOT HIT THIS")
 
-def employeeCommonMainMenu(empID):
+def employeeCommonMainMenu(empID, storeID):
         questions = [inquirer.List(
                 'employeeMain', 
                 message="Select an option:",
@@ -80,25 +81,12 @@ def employeeCommonMainMenu(empID):
         answer = inquirer.prompt(questions)
         
 
-        if answer["customerMain"] == "Store":
-                 store(custID)
-        elif answer["customerMain"] == "MyOrders": 
-                myOrders(custID)
-        elif answer["customerMain"] == "Trending": 
-                trendingPlants(custID)
-        elif answer["customerMain"] == "SearchPlant": 
-                searchPlant(custID)
-        elif answer["customerMain"] == "Logout":
-                 customerStart()
+        if answer["employeeMain"] == "Orders": 
+                orders(empID, storeID)
+        elif answer["employeeMain"] == "Logout":
+                 employeeStart()
         else:
                 print("ERROR!!! SHOULD NOT HIT THIS")
-
-                
-        switch={
-                "Orders": orders(empID), #might need to pass down some info, store? empID? need to modify the menu params and signin if so
-                "Logout": employeeStart()
-        }
-        switch.get(answer["employeeMain"], "NOT FOUND")
         
 
 def employeeSignUp():
@@ -123,14 +111,14 @@ def employeeSignUp():
         nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
 
         print("You have signed up! go ahead and sign in now!")
-        employeeStart()
+        employeeSignIn()
 
 def customerStart():
         # ask customer if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType', 
                 message="Sign in, or create a new account and join today!",
-                choices=['Sign In', 'Sign Up'],
+                choices=['Sign In', 'Sign Up','Back'],
         ),]
         answer = inquirer.prompt(questions)
         if answer["userType"] == "Sign In":
@@ -205,34 +193,48 @@ def customerSignUp():
         nursery.insert_customer(customerName, customerUsername, customerPassword, customerPhone_no, customerAddress, customerEmail)
 
         print("You have signed up! go ahead and sign in now!")
-        customerStart()
+        customerSignIn()
         
 
         
 
 
-def orders(empID):
+def orders(empID, storeID):
         print("orders needs to be implmented here")
+        print("The parameters passed in are EmpID: " + str(empID) + " and  storeID: " + str(storeID))
+        employeeCommonMainMenu(empID, storeID)
 
 def inventory(empID, storeID):
         print("orders needs to be implmented here")
+        print("The parameters passed in are EmpID: " + str(empID) + " and storeID: " + str(storeID))
+        employeeManagerMainMenu(empID, storeID)
 
 def manageEmp(empID):
         print("manageEmp needs to be implmented here")
+        print("The parameters passed in are EmpID: " + str(empID))
+        employeeManagerMainMenu(empID, storeID)
 
 def myOrders(custID):
         print("myOrders needs to be implmented here")
+        print("The parameters passed in are CustID: " + str(custID))
+        customerMainMenu(custID)
 
 
 def trendingPlants(custID):
         print("trendingPlants needs to be implmented here")
+        print("The parameters passed in are CustID: " + str(custID))
+        customerMainMenu(custID)
 
 
 def searchPlant(custID):
         print("searchPlant needs to be implmented here")        
+        print("The parameters passed in are CustID: " + str(custID))
+        customerMainMenu(custID)
 
 def store(custID):
         print("store needs to be implmented here")
+        print("The parameters passed in are CustID: " + str(custID))
+        customerMainMenu(custID)
 
 def startScript():
         # nursery.startup()
