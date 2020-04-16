@@ -64,9 +64,9 @@ def employeeManagerMainMenu(empID, storeID):
         ),]
         answer = inquirer.prompt(questions)
         if answer["employeeMain"] == "Inventory": 
-                inventory(empID)
+                inventory(empID, storeID)
         elif answer["employeeMain"] == "Manage Employees":
-                manageEmp(empID)
+                manageEmp(empID, storeID)
         elif answer["employeeMain"] == "Logout":
                  employeeStart()
         else:
@@ -209,9 +209,9 @@ def inventory(empID, storeID):
         print("The parameters passed in are EmpID: " + str(empID) + " and storeID: " + str(storeID))
         employeeManagerMainMenu(empID, storeID)
 
-def manageEmp(empID):
+def manageEmp(empID, storeID):
         print("manageEmp needs to be implmented here")
-        print("The parameters passed in are EmpID: " + str(empID))
+        print("The parameters passed in are EmpID: " + str(empID) + " and storeID: " + str(storeID))
         employeeManagerMainMenu(empID, storeID)
 
 def myOrders(custID):

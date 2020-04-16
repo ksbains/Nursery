@@ -40,9 +40,6 @@ create table plant_type (
     unique(type_name)
 );
 
-
-
-
 create table customer (
 	cust_id integer not null AUTO_INCREMENT,
     cust_name varchar(20) not null,
@@ -52,7 +49,7 @@ create table customer (
     address varchar(50),
     email_id varchar(20),
     primary key(cust_id),
-    unique(cust_username),
+    unique(cust_username)
 );
 
 
