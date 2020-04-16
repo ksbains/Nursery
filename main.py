@@ -137,7 +137,6 @@ def customerSignIn():
         answers = inquirer.prompt(questions)
         custUsername = answers['username']
         custPassword = answers['password']
-
         # check if the customer is in the DB
         result = nursery.inCustomer(custUsername)
         if not result:
@@ -170,7 +169,6 @@ def customerMainMenu(custID):
                  customerStart()
         else:
                 print("ERROR!!! SHOULD NOT HIT THIS")
-        
 
 def customerSignUp():
         questions = [
@@ -182,7 +180,6 @@ def customerSignUp():
           inquirer.Text('email_id', message="What's your email_id")
         ]
         answers = inquirer.prompt(questions)
-        
         customerName = answers['name']
         customerUsername = answers['username']
         customerPassword = answers['password']
@@ -195,9 +192,6 @@ def customerSignUp():
         print("You have signed up! go ahead and sign in now!")
         customerSignIn()
         
-
-        
-
 
 def orders(empID, storeID):
         print("orders needs to be implmented here")
@@ -235,9 +229,9 @@ def store(custID):
         print("store needs to be implmented here")
         print("The parameters passed in are CustID: " + str(custID))
         customerMainMenu(custID)
-
+        
 def startScript():
-        # nursery.startup()
+        #nursery.startup()
         # nursery.main()
         mainMenu()
 
