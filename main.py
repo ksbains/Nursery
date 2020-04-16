@@ -205,7 +205,7 @@ def orders(empID, storeID):
         employeeCommonMainMenu(empID, storeID)
 
 def inventory(empID, storeID):
-        print("orders needs to be implmented here")
+        print("inventory needs to be implmented here")
         print("The parameters passed in are EmpID: " + str(empID) + " and storeID: " + str(storeID))
         employeeManagerMainMenu(empID, storeID)
 
