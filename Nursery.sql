@@ -8,8 +8,7 @@ create table store (
    number_of_lots integer,
    phone_no char(10),
    address varchar(50),
-   primary key(store_id),
-   foreign key(mgr_id) references employee(emp_id) ON DELETE set null
+   primary key(store_id)
 );
 
 create table lot(
@@ -103,3 +102,6 @@ create table employee (
    unique(emp_username),
    foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );
+
+alter table store
+add foreign key(mgr_id) references employee(emp_id) on delete set null;
