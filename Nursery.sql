@@ -4,7 +4,6 @@ use nursery;
 
 create table store (
    store_id integer not null AUTO_INCREMENT,
-   mgr_id integer,
    number_of_lots integer,
    phone_no char(10),
    address varchar(50),
@@ -13,7 +12,7 @@ create table store (
 
 create table lot(
    store_id integer NOT NULL,
-   lot_id integer NOT NULL AUTO_INCREMENT,
+   lot_id integer NOT NULL,
    primary key(store_id, lot_id),
    foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );
@@ -45,8 +44,7 @@ create table plant_locator (
    lot_id integer not null,
    primary key(p_locator_id),
    foreign key(plant_id) references plant(plant_id) ON DELETE CASCADE,
-   foreign key(store_id) references store(store_id) ON DELETE CASCADE,
-   foreign key(lot_id) references lot(lot_id) ON DELETE CASCADE
+   foreign key(store_id, lot_id) references lot(store_id, lot_id) ON DELETE CASCADE
 );
 
 create table customer (
@@ -63,7 +61,7 @@ create table customer (
 
 create table orders (
    order_id integer not null AUTO_INCREMENT,
-   store_id integer not null,
+   store_id integer,
    cust_id integer not null,
    order_date date,
    order_type varchar(20),
@@ -78,7 +76,7 @@ create table orders (
 create table order_item (
    item_id integer not null AUTO_INCREMENT,
    order_id integer not null,
-   plant_id integer not null,
+   plant_id integer,
    quantity integer,
    price decimal(10,2),
    rating decimal(2,1),
@@ -102,6 +100,3 @@ create table employee (
    unique(emp_username),
    foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );
-
-alter table store
-add foreign key(mgr_id) references employee(emp_id) on delete set null;
