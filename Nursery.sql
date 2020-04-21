@@ -65,6 +65,7 @@ create table orders (
    cust_id integer not null,
    order_date date,
    order_type varchar(20),
+   order_status varchar(20),
    payment_status varchar(20),
    price decimal(10,2),
    delivery_address varchar(70),
