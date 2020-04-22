@@ -5,7 +5,7 @@ import inquirer
 
 def mainMenu():
         questions = [inquirer.List(
-                'userType', 
+                'userType',
                 message="Are you an Employee or Customer?",
                 choices=['Employee', 'Customer'],
         ),]
@@ -18,7 +18,7 @@ def mainMenu():
 def employeeStart():
         # ask Employee if they want to sign up or sign in
         questions = [inquirer.List(
-                'userType', 
+                'userType',
                 message="Sign in, or create a new account and join today!",
                 choices=['Sign In', 'Sign Up', 'Back'],
         ),]
@@ -35,7 +35,7 @@ def employeeSignIn():
           inquirer.Text('username', message="What's your username"),
           inquirer.Text('password', message="What's your password")
         ]
-        
+
         answers = inquirer.prompt(questions)
         empUsername = answers['username']
         empPassword = answers['password']
@@ -45,7 +45,7 @@ def employeeSignIn():
         if not result:
                 print("You are an IMPOSTER!!")
                 employeeStart()
-        
+
         if result[3] == empPassword:
                 if not result[8]:
                         employeeManagerMainMenu(result[0], result[4])
@@ -58,12 +58,12 @@ def employeeSignIn():
 
 def employeeManagerMainMenu(empID, storeID):
         questions = [inquirer.List(
-                'employeeMain', 
+                'employeeMain',
                 message="Select an option:",
                 choices=['Inventory', 'Manage Employees', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
-        if answer["employeeMain"] == "Inventory": 
+        if answer["employeeMain"] == "Inventory":
                 inventory(empID, storeID)
         elif answer["employeeMain"] == "Manage Employees":
                 manageEmp(empID, storeID)
@@ -74,20 +74,20 @@ def employeeManagerMainMenu(empID, storeID):
 
 def employeeCommonMainMenu(empID, storeID):
         questions = [inquirer.List(
-                'employeeMain', 
+                'employeeMain',
                 message="Select an option:",
                 choices=['Orders', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
-        
 
-        if answer["employeeMain"] == "Orders": 
+
+        if answer["employeeMain"] == "Orders":
                 orders(empID, storeID)
         elif answer["employeeMain"] == "Logout":
                  employeeStart()
         else:
                 print("ERROR!!! SHOULD NOT HIT THIS")
-        
+
 
 def employeeSignUp():
         questions = [
@@ -97,7 +97,7 @@ def employeeSignUp():
           inquirer.Text('phone_no', message="What's your Phone #")
         ]
         answers = inquirer.prompt(questions)
-        
+
         employeeName = answers['name']
         employeeUsername = answers['username']
         employeePassword = answers['password']
@@ -106,7 +106,7 @@ def employeeSignUp():
         employeeJob = "Sales Associate"
         employeeStoreID = 1
         employeeManager = 4
-        
+
         # insert_employee(store_id, supervisor_id)
         nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
 
@@ -116,7 +116,7 @@ def employeeSignUp():
 def customerStart():
         # ask customer if they want to sign up or sign in
         questions = [inquirer.List(
-                'userType', 
+                'userType',
                 message="Sign in, or create a new account and join today!",
                 choices=['Sign In', 'Sign Up','Back'],
         ),]
@@ -133,7 +133,7 @@ def customerSignIn():
           inquirer.Text('username', message="What's your username"),
           inquirer.Text('password', message="What's your password")
         ]
-        
+
         answers = inquirer.prompt(questions)
         custUsername = answers['username']
         custPassword = answers['password']
@@ -142,7 +142,7 @@ def customerSignIn():
         if not result:
                 print("You are an IMPOSTER!!")
                 customerStart()
-        
+
         if result[3] == custPassword:
                 customerMainMenu(result[0])
         else:
@@ -151,7 +151,7 @@ def customerSignIn():
 
 def customerMainMenu(custID):
         questions = [inquirer.List(
-                'customerMain', 
+                'customerMain',
                 message="Select an option:",
                 choices=['Store', 'MyOrders', 'Trending', "SearchPlant", 'Logout'],
         ),]
@@ -159,11 +159,11 @@ def customerMainMenu(custID):
 
         if answer["customerMain"] == "Store":
                  store(custID)
-        elif answer["customerMain"] == "MyOrders": 
+        elif answer["customerMain"] == "MyOrders":
                 myOrders(custID)
-        elif answer["customerMain"] == "Trending": 
+        elif answer["customerMain"] == "Trending":
                 trendingPlants(custID)
-        elif answer["customerMain"] == "SearchPlant": 
+        elif answer["customerMain"] == "SearchPlant":
                 searchPlant(custID)
         elif answer["customerMain"] == "Logout":
                  customerStart()
@@ -186,12 +186,12 @@ def customerSignUp():
         customerPhone_no = answers['phone_no']
         customerAddress = answers['address']
         customerEmail = answers['email_id']
-        
+
         nursery.insert_customer(customerName, customerUsername, customerPassword, customerPhone_no, customerAddress, customerEmail)
 
         print("You have signed up! go ahead and sign in now!")
         customerSignIn()
-        
+
 
 def orders(empID, storeID):
         print("orders needs to be implmented here")
@@ -203,10 +203,24 @@ def inventory(empID, storeID):
         print("The parameters passed in are EmpID: " + str(empID) + " and storeID: " + str(storeID))
         employeeManagerMainMenu(empID, storeID)
 
+# Jasper's changes
 def manageEmp(empID, storeID):
-        print("manageEmp needs to be implmented here")
-        print("The parameters passed in are EmpID: " + str(empID) + " and storeID: " + str(storeID))
-        employeeManagerMainMenu(empID, storeID)
+
+    questions = [inquirer.List(
+            'manageOption',
+            message="Select an option:",
+            choices=['Hire', 'Fire', 'Promote', 'Back'],
+    ),]
+    answer = inquirer.prompt(questions)
+
+    if answer["manageOption"] == "Hire":
+            hireEmployee(empID, storeID)
+    elif answer["manageOption"] == "Fire":
+            fireEmployee(empID, storeID)
+    elif answer["manageOption"] == "Promote":
+            promoteEmployee(empID, storeID)
+    else:
+            employeeManagerMainMenu(empID, storeID)
 
 def myOrders(custID):
         print("myOrders needs to be implmented here")
@@ -221,7 +235,7 @@ def trendingPlants(custID):
 
 
 def searchPlant(custID):
-        print("searchPlant needs to be implmented here")        
+        print("searchPlant needs to be implmented here")
         print("The parameters passed in are CustID: " + str(custID))
         customerMainMenu(custID)
 
@@ -229,12 +243,82 @@ def store(custID):
         print("store needs to be implmented here")
         print("The parameters passed in are CustID: " + str(custID))
         customerMainMenu(custID)
-        
+
+# Jasper's changes
+def hireEmployee(empID, storeID):
+    # enter new hire information
+    questions = [
+      inquirer.Text('name',       message="Enter employee name"),
+      inquirer.Text('username',   message="Enter employee username"),
+      inquirer.Text('password',   message="Enter employee password"),
+      inquirer.Text('phone_no',   message="Enter employee phone number"),
+      inquirer.Text('start_date', message="Enter employee start date"),
+      inquirer.List('job_title',  message='Select employee job title',
+                                  choices=['Manager', 'Sales Associate'],
+                                  default='Sales Associate')
+    ]
+    answers = inquirer.prompt(questions)
+
+    employeeName     = answers['name']
+    employeeUsername = answers['username']
+    employeePassword = answers['password']
+    employeePhone_no = answers['phone_no']
+    employeeStart    = answers['start_date']
+    employeeJob      = answers['job_title']
+    employeeStoreID  = storeID
+    employeeManager  = empID
+
+    # insert_employee(store_id, supervisor_id)
+    nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
+    manageEmp(empID, storeID)
+
+# Jasper's changes
+def fireEmployee(empID, storeID):
+
+    employees = nursery.getEmployees(storeID)
+    displayEmployees(employees)
+
+    questions = [
+      inquirer.Text('emp_id', message="Enter ID of employee to be fired"),
+    ]
+    answers = inquirer.prompt(questions)
+    employeeID = answers['emp_id']
+
+    if employeeID == empID:
+        print("Invalid Operation: Cannot fire selected employee")
+    else:
+        nursery.delete_employee(employeeID)
+
+    manageEmp(empID, storeID)
+
+# Jasper's changes
+def promoteEmployee(empID, storeID):
+
+    employees = nursery.getEmployees(storeID)
+    displayEmployees(employees)
+
+    questions = [
+      inquirer.Text('emp_id', message="Enter ID of employee to promote"),
+    ]
+    answers = inquirer.prompt(questions)
+    employeeID = answers['emp_id']
+
+    if employeeID == empID:
+        print("Invalid Operation: Cannot promote selected employee")
+    else:
+        nursery.update_supID(employeeID, None)
+
+    manageEmp(empID, storeID)
+
+# Jasper's changes
+def displayEmployees(employees):
+    for employee in employees:
+        print(', '.join(map(str,list(employee))))
+    print("")
+
 def startScript():
         #nursery.startup()
         # nursery.main()
         mainMenu()
 
 startScript()
-
-

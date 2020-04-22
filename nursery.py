@@ -102,6 +102,13 @@ def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj,
 	cursor.execute(sql, data)
 	mydb.commit()
 
+# Jasper's changes
+def update_supID(emp_id, supervisor_id):
+	sql = "UPDATE employee SET supervisor_id = %s WHERE emp_id = %s"
+	data = (supervisor_id, emp_id)
+	cursor.execute(sql, data)
+	mydb.commit()
+
 #-------------------------------------------------------------------------------------DELETE from Tables-----------------------------------------------
 def delete_plant(id):
 	sql = "DELETE FROM plant WHERE id = %s"
@@ -284,6 +291,16 @@ def getEmployee(emp_id, field):
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
+# Jasper's changes
+def getEmployees(storeID):
+	sql = "SELECT * FROM employee WHERE store_id = %s"
+	try:
+		cursor.execute(sql, (storeID,))
+		result = cursor.fetchall()
+		return result
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
 def getEmployeeLogin(username, field):
 	sql = "SELECT * FROM employee WHERE emp_username = %s"
 	try:
@@ -430,7 +447,7 @@ def startup():
 	customerPhoneNo = "0123456789"
 	customerAddress = "1234 Robin Wy."
 	customerEmail = "jeff@gmail.com"
-	
+
 	#ORDERS
 	OrderStoreId = 1
 	OrderCustId = 1
@@ -455,7 +472,7 @@ def startup():
 	EmployeeDesignation = "Worker"
 	EmployeeSupervisor = 4
 
-	
+
 	insert_store(storeLots, storePhoneNo, storeAddress)
 	insert_lot(lotStoreId)
 	insert_plant(plantName, plantPrice, plantDescription, plantAge, plantLotId)
@@ -474,17 +491,17 @@ def main():
 
 	print("-----------------------LOT---------------------------")
 	print("Lot StoreId is: " + str(getLot(1, "store_id")))
-	
+
 	print("-----------------PLANT TABLE-----------------")
 	print("Plant name is: " + getPlant(1, "name"))
 	print("Plant price is: " + str(getPlant(1, "price")))
 	print("Plant description is: " + getPlant(1, "description"))
 	print("Plant age is: " + str(getPlant(1, "age")))
-	
+
 	print("------------------PLANT TYPE------------------")
 	print("PlantType name is: " + getPlantType(1, "type_name"))
 	print("PlantType description is: " + getPlantType(1, "description"))
-	
+
 	print("------------------CUSTOMER---------------------------")
 	print("Customer Name is: " + getCustomer(1, "cust_name"))
 	print("Customer UserName is: " + getCustomer(1, "cust_username"))
@@ -492,7 +509,7 @@ def main():
 	print("Customer Phone Number is: " + getCustomer(1, "phone_no"))
 	print("Customer Address is: " + getCustomer(1, "address"))
 	print("Customer Email is: " + getCustomer(1, "email_id"))
-	
+
 	print("-------------------------ORDERS-------------------------")
 	print("Orders StoreId is: " + str(getOrders(1, "store_id")))
 	print("Orders CustomerId is: " + str(getOrders(1, "cust_id")))
@@ -500,14 +517,14 @@ def main():
 	print("Orders Payment Status is: " + getOrders(1, "payment_status"))
 	print("Orders Price is: " + str(getOrders(1, "price")))
 	print("Orders Delivery Address is: " + getOrders(1, "delivery_address"))
-	
+
 	print("-------------------------ORDER ITEM-------------------------")
 	print("OrderItem OrderId is: " + str(getOrderItem(1, "order_id")))
 	print("OrderItem PlantId is: " + str(getOrderItem(1, "plant_id")))
 	print("OrderItem Price is: " + str(getOrderItem(1, "price")))
 	print("OrderItem Rating is: " + str(getOrderItem(1, "rating"))	)
-	
-	print("-------------------------EMPLOYEE-------------------------")	
+
+	print("-------------------------EMPLOYEE-------------------------")
 	print("Employee Name is: " + getEmployee(1, "emp_name"))
 	print("Employee UserName is: " + getEmployee(1, "emp_username"))
 	print("Employee Password is: " + getEmployee(1, "emp_password"))
@@ -518,7 +535,7 @@ def main():
 	print("Employee Supervisor Id is: " + str(getEmployee(1, "supervisor_id")))
 
 	# -----------------------------------------------UPDATE--------------------------------------------------------
-	
+
 	update_store(1, 49, "9876543210", "3241 Bobcat St.")
 	update_lot(1, 1)
 	update_plant(1, "King Plam", 47, "Royal Palm", 24)
@@ -532,7 +549,7 @@ def main():
 	#------------------------------------AFTER UPDATE----------------------------------------------------
 
 	print("------------------------------------AFTER UPDATE----------------------------------------------------")
-	
+
 	print("------------------STORE---------------------------")
 	print("Store Number of Lots is: " + str(getStore(1, "number_of_lots")))
 	print("Store Phone Number is: " + getStore(1, "phone_no"))
@@ -573,7 +590,7 @@ def main():
 	print("OrderItem Price is: " + str(getOrderItem(1, "price")))
 	print("OrderItem Rating is: " + str(getOrderItem(1, "rating"))	)
 
-	print("-------------------------EMPLOYEE-------------------------")	
+	print("-------------------------EMPLOYEE-------------------------")
 	print("Employee Name is: " + getEmployee(1, "emp_name"))
 	print("Employee UserName is: " + getEmployee(1, "emp_username"))
 	print("Employee Password is: " + getEmployee(1, "emp_password"))
@@ -594,7 +611,7 @@ def main():
 
 
 	print("------------------------------------AFTER DELETE----------------------------------------------------")
-	
+
 	print("------------------STORE---------------------------")
 	stores()
 
@@ -603,18 +620,18 @@ def main():
 
 	print("-----------------PLANT TABLE-----------------")
 	plants()
-	
+
 	print("------------------PLANT TYPE------------------")
 	plantTypes()
 
 	print("------------------CUSTOMER---------------------------")
 	customers()
-	
+
 	print("-------------------------ORDERS-------------------------")
 	orders()
-	
+
 	print("-------------------------ORDER ITEM-------------------------")
 	orderItems()
-	
-	print("-------------------------EMPLOYEE-------------------------")	
+
+	print("-------------------------EMPLOYEE-------------------------")
 	employees()
