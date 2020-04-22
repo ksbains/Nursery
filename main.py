@@ -3,12 +3,14 @@ import inquirer
 import ordersFlow
 import trendingFlow
 import nursery_store
+from pyfiglet import figlet_format
 
-
+print(figlet_format('Green Ivy', font='slant'))
+print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
 
 def mainMenu():
         questions = [inquirer.List(
-                'userType', 
+                'userType',
                 message="Are you an Employee or Customer?",
                 choices=['Employee', 'Customer'],
         ),]
@@ -21,7 +23,7 @@ def mainMenu():
 def employeeStart():
         # ask Employee if they want to sign up or sign in
         questions = [inquirer.List(
-                'userType', 
+                'userType',
                 message="Sign in, or create a new account and join today!",
                 choices=['Sign In', 'Sign Up', 'Back'],
         ),]
@@ -35,10 +37,10 @@ def employeeStart():
 
 def employeeSignIn():
         questions = [
-          inquirer.Text('username', message="What's your username"),
-          inquirer.Text('password', message="What's your password")
+                inquirer.Text('username', message="What's your username"),
+                inquirer.Text('password', message="What's your password")
         ]
-        
+
         answers = inquirer.prompt(questions)
         empUsername = answers['username']
         empPassword = answers['password']
@@ -48,8 +50,9 @@ def employeeSignIn():
         if not result:
                 print("You are an IMPOSTER!!")
                 employeeStart()
+
         
-        if result[3] == empPassword:
+        if nursery.verify_password(result[3],empPassword):
                 if not result[8]:
                         employeeManagerMainMenu(result[0], result[4])
                 else:
@@ -61,46 +64,46 @@ def employeeSignIn():
 
 def employeeManagerMainMenu(empID, storeID):
         questions = [inquirer.List(
-                'employeeMain', 
+                'employeeMain',
                 message="Select an option:",
                 choices=['Inventory', 'Manage Employees', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
-        if answer["employeeMain"] == "Inventory": 
+        if answer["employeeMain"] == "Inventory":
                 inventory(empID, storeID)
         elif answer["employeeMain"] == "Manage Employees":
                 manageEmp(empID, storeID)
         elif answer["employeeMain"] == "Logout":
-                 employeeStart()
+                employeeStart()
         else:
                 print("ERROR!!! SHOULD NOT HIT THIS")
 
 def employeeCommonMainMenu(empID, storeID):
         questions = [inquirer.List(
-                'employeeMain', 
+                'employeeMain',
                 message="Select an option:",
                 choices=['Orders', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
-        
 
-        if answer["employeeMain"] == "Orders": 
+
+        if answer["employeeMain"] == "Orders":
                 orders(empID, storeID)
         elif answer["employeeMain"] == "Logout":
-                 employeeStart()
+                employeeStart()
         else:
                 print("ERROR!!! SHOULD NOT HIT THIS")
-        
+
 
 def employeeSignUp():
         questions = [
-          inquirer.Text('name', message="What's your Name"),
-          inquirer.Text('username', message="What's your username"),
-          inquirer.Text('password', message="What's your password"),
-          inquirer.Text('phone_no', message="What's your Phone #")
+                inquirer.Text('name', message="What's your Name"),
+                inquirer.Text('username', message="What's your username"),
+                inquirer.Text('password', message="What's your password"),
+                inquirer.Text('phone_no', message="What's your Phone #")
         ]
         answers = inquirer.prompt(questions)
-        
+
         employeeName = answers['name']
         employeeUsername = answers['username']
         employeePassword = answers['password']
@@ -109,7 +112,7 @@ def employeeSignUp():
         employeeJob = "Sales Associate"
         employeeStoreID = 1
         employeeManager = 4
-        
+
         # insert_employee(store_id, supervisor_id)
         nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
 
@@ -119,7 +122,7 @@ def employeeSignUp():
 def customerStart():
         # ask customer if they want to sign up or sign in
         questions = [inquirer.List(
-                'userType', 
+                'userType',
                 message="Sign in, or create a new account and join today!",
                 choices=['Sign In', 'Sign Up','Back'],
         ),]
@@ -133,10 +136,10 @@ def customerStart():
 
 def customerSignIn():
         questions = [
-          inquirer.Text('username', message="What's your username"),
-          inquirer.Text('password', message="What's your password")
+                inquirer.Text('username', message="What's your username"),
+                inquirer.Text('password', message="What's your password")
         ]
-        
+
         answers = inquirer.prompt(questions)
         custUsername = answers['username']
         custPassword = answers['password']
@@ -145,8 +148,8 @@ def customerSignIn():
         if not result:
                 print("You are an IMPOSTER!!")
                 customerStart()
-        
-        if result[3] == custPassword:
+
+        if nursery.verify_password(result[3], custPassword):
                 customerMainMenu(result[0])
         else:
                 print("Incorrect Password!!! Try again")
@@ -154,33 +157,34 @@ def customerSignIn():
 
 def customerMainMenu(custID):
         questions = [inquirer.List(
-                'customerMain', 
+                'customerMain',
                 message="Select an option:",
-                choices=['Store', 'MyOrders', 'Trending', "SearchPlant", 'Logout'],
+                choices=['SearchPlant', 'MyOrders', 'Trending', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
 
-        if answer["customerMain"] == "Store":
-                 store(custID)
-        elif answer["customerMain"] == "MyOrders": 
+        if answer["customerMain"] == "SearchPlant":
+                nursery_store.searchPlants(custID)
+                customerMainMenu(custID)
+        elif answer["customerMain"] == "MyOrders":
                 myOrders(custID)
-        elif answer["customerMain"] == "Trending": 
+        elif answer["customerMain"] == "Trending":
                 trendingPlants(custID)
-        elif answer["customerMain"] == "SearchPlant": 
-                searchPlant(custID)
+        #elif answer["customerMain"] == "SearchPlant":
+        #searchPlant(custID)
         elif answer["customerMain"] == "Logout":
-                 customerStart()
+                customerStart()
         else:
                 print("ERROR!!! SHOULD NOT HIT THIS")
 
 def customerSignUp():
         questions = [
-          inquirer.Text('name', message="What's your Name"),
-          inquirer.Text('username', message="What's your username"),
-          inquirer.Text('password', message="What's your password"),
-          inquirer.Text('phone_no', message="What's your Phone #"),
-          inquirer.Text('address', message="What's your Address"),
-          inquirer.Text('email_id', message="What's your email_id")
+                inquirer.Text('name', message="What's your Name"),
+                inquirer.Text('username', message="What's your username"),
+                inquirer.Text('password', message="What's your password"),
+                inquirer.Text('phone_no', message="What's your Phone #"),
+                inquirer.Text('address', message="What's your Address"),
+                inquirer.Text('email_id', message="What's your email_id")
         ]
         answers = inquirer.prompt(questions)
         customerName = answers['name']
@@ -189,12 +193,12 @@ def customerSignUp():
         customerPhone_no = answers['phone_no']
         customerAddress = answers['address']
         customerEmail = answers['email_id']
-        
+
         nursery.insert_customer(customerName, customerUsername, customerPassword, customerPhone_no, customerAddress, customerEmail)
 
         print("You have signed up! go ahead and sign in now!")
         customerSignIn()
-        
+
 
 def orders(empID, storeID):
         ordersFlow.showEmployeeOrders()
@@ -227,12 +231,10 @@ def searchPlant(custID):
 def store(custID):
         nursery_store.searchPlants(custID)
         customerMainMenu(custID)
-        
+
 def startScript():
-        #nursery.startup()
+        # nursery.startup()
         # nursery.main()
         mainMenu()
 
 startScript()
-
-

@@ -7,7 +7,7 @@ import nursery_store
 mydb = mysql.connector.connect(
 	host="localhost",
 	user="root",
-	passwd="***",
+	passwd="password",
 	database="nursery"
 )
 
