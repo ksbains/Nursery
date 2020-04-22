@@ -6,7 +6,7 @@ from prettytable import PrettyTable
 mydb = mysql.connector.connect(
 	host="localhost",
 	user="root",
-	passwd="***",
+	passwd="password",
 	database="nursery"
 )
 
