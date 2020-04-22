@@ -15,30 +15,35 @@ def mainMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
-                choices=['Employee Management', 'Inventory Management'],),]
+                choices=['Employee Management', 'Inventory Management', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Employee Management":
-            empManMenu(empID, storeID)
+        empManMenu(empID, storeID)
+    elif answer["userType"] == "Inventory Management":
+        invManMenu(empID, storeID)
     else:
-            invManMenu(empID, storeID)
+        print("Exited")
 
 def empManMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
-                choices=['Hire Employee', 'Fire Employee', 'Promote Employee'],),]
+                choices=['Hire Employee', 'Fire Employee', 'Promote Employee', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Hire Employee":
         print("hireEmpMenu()")
     elif answer["userType"] == "Fire Employee":
         print("fireEmpMenu()")
-    else:
+    elif answer["userType"] == "Promote Employee":
         print("promEmpMenu()")
+    else:
+        mainMenu(empID, storeID)
+
 def invManMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
-                choices=['Add Plants', 'Delete Plants', 'Update Plants', 'Show Plants'],),]
+                choices=['Add Plants', 'Delete Plants', 'Update Plants', 'Show Plants', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Add Plants":
         addPlantsMenu(empID, storeID)
@@ -48,6 +53,8 @@ def invManMenu(empID, storeID):
         updatePlantsMenu(empID, storeID)
     elif answer["userType"] == "Show Plants":
         showPlantsMenu(empID, storeID)
+    else:
+        mainMenu(empID, storeID)
 
 def addPlantsMenu(empID, storeID):
     questions = [
@@ -61,12 +68,70 @@ def addPlantsMenu(empID, storeID):
     invManMenu(empID, storeID)
 
 def deletePlantsMenu(empID, storeID):
-    print("hi")
+    plantDict={}
+    sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
+    try:
+        cursor.execute(sql) #, storeID)
+        result = cursor.fetchall()
+        for row in result:
+            plantDict[row[0]]=row[1]
+    except mysql.connector.Error as err:
+        print("MYSQL ERROR: {}".format(err))
+    #plantList=list(plantDict.values())
+    #plantList.append("All the Above")
+    #plantList.append("None of the Above")
+    questions = [
+                inquirer.Checkbox('deletions',
+                message="What plants do you want to delete?",
+                choices=plantDict.values(),
+                ),]
+    answers = inquirer.prompt(questions)
+    answerList=list(answers.values())[0]
+    for i in range(len(answerList[0])):
+        plant_name = answerList[i]
+        for id, name in plantDict.items():
+            print(id, name, plant_name)
+            if name == plant_name:
+                nursery.delete_plant(id)
+                break
+    print(answerList, "deleted!")
     invManMenu(empID, storeID)
-    
 
 def updatePlantsMenu(empID, storeID):
-    print("hi")
+    plantDict={}
+    sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
+    try:
+        cursor.execute(sql) #, storeID)
+        result = cursor.fetchall()
+        for row in result:
+            plantDict[row[0]]=row[1]
+    except mysql.connector.Error as err:
+        print("MYSQL ERROR: {}".format(err))
+    '''for i in range(len(plantList)):
+        plantNames.append(plantList[i][1])'''
+    #plantList.append("All the Above")
+    #plantList.append("None of the Above")
+    questions = [
+                inquirer.Checkbox('updates',
+                message="What plants do you want to update?",
+                choices=plantDict.values(),
+                ),]
+    answers = inquirer.prompt(questions)
+    answerList=list(answers.values())[0]
+    for i in range(len(answerList[0])):
+        plant_name = answerList[i]
+        for id, name in plantDict.items():
+            print(id, name, plant_name)
+            if name == plant_name:
+                questions = [
+                            inquirer.Text('price', message="What's the plant price?"),
+                            inquirer.Text('description', message="What's the plant description?"),
+                            inquirer.Text('age', message="What's the plant age?"),]
+                answers = inquirer.prompt(questions)
+                answerList=list(answers.values())[0]
+                nursery.update_plant(id, name, price=answerList[0], description=answerList[1], age=answerList[2])
+                break
+    print(answerList, "updated!")
     invManMenu(empID, storeID)
 
 def showPlantsMenu(empID, storeID):
@@ -79,3 +144,5 @@ def showPlantsMenu(empID, storeID):
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
     invManMenu(empID, storeID)
+
+mainMenu(empID, storeID)
