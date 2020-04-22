@@ -220,9 +220,10 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 
     store_id = fetchStoreId(store_location)
     store_id = store_id[0]
+    order_status = "New"
 
-    sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s)"
-    cursor.execute(sql, (store_id, custID, order_type, payment_status, order_amount, address))
+    sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
+    cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
     mydb.commit()
 
     order_id = cursor.lastrowid
@@ -349,5 +350,4 @@ def choiceForOrders(custID, store_location, plants):
             choiceForOrders(custID, store_location, plants)
 
     return orders
-
 #searchPlants("1")
