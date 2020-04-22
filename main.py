@@ -158,7 +158,7 @@ def customerMainMenu(custID):
         questions = [inquirer.List(
                 'customerMain',
                 message="Select an option:",
-                choices=['Store', 'MyOrders', 'Trending', "SearchPlant", 'Logout'],
+                choices=['SearchPlant', 'MyOrders', 'Trending', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
 
