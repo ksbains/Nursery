@@ -1,5 +1,8 @@
 import nursery
 import inquirer
+import ordersFlow
+import trendingFlow
+import nursery_store
 
 
 
@@ -194,8 +197,7 @@ def customerSignUp():
         
 
 def orders(empID, storeID):
-        print("orders needs to be implmented here")
-        print("The parameters passed in are EmpID: " + str(empID) + " and  storeID: " + str(storeID))
+        ordersFlow.showEmployeeOrders()
         employeeCommonMainMenu(empID, storeID)
 
 def inventory(empID, storeID):
@@ -209,25 +211,21 @@ def manageEmp(empID, storeID):
         employeeManagerMainMenu(empID, storeID)
 
 def myOrders(custID):
-        print("myOrders needs to be implmented here")
-        print("The parameters passed in are CustID: " + str(custID))
+        ordersFlow.showCustOrderMenu(custID)
         customerMainMenu(custID)
 
 
 def trendingPlants(custID):
-        print("trendingPlants needs to be implmented here")
-        print("The parameters passed in are CustID: " + str(custID))
+        trendingFlow.showTrendingMainMenu(custID)
         customerMainMenu(custID)
 
 
 def searchPlant(custID):
-        print("searchPlant needs to be implmented here")        
-        print("The parameters passed in are CustID: " + str(custID))
+        nursery_store.searchPlants(custID)
         customerMainMenu(custID)
 
 def store(custID):
-        print("store needs to be implmented here")
-        print("The parameters passed in are CustID: " + str(custID))
+        nursery_store.searchPlants(custID)
         customerMainMenu(custID)
         
 def startScript():
