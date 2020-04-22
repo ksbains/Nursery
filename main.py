@@ -1,9 +1,19 @@
+import mysql.connector
 import nursery
 import inquirer
 import ordersFlow
 import trendingFlow
 import nursery_store
 from pyfiglet import figlet_format
+
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="password",
+    database="nursery"
+)
+
+cursor = mydb.cursor()
 
 print(figlet_format('Green Ivy', font='slant'))
 print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
@@ -119,20 +129,20 @@ def employeeSignUp():
         print("You have signed up! go ahead and sign in now!")
         employeeSignIn()
     
-def employeeManagerMainMenu(result[0], result[4]):
+def employeeManagerMainMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
                 choices=['Employee Management', 'Inventory Management', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Employee Management":
-        empManMenu(result[0], result[4])
+        empManMenu(empID, storeID)
     elif answer["userType"] == "Inventory Management":
-        invManMenu(result[0], result[4])
+        invManMenu(empID, storeID)
     else:
         print("Exited")
 
-def empManMenu(result[0], result[4]):
+def empManMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
@@ -145,37 +155,40 @@ def empManMenu(result[0], result[4]):
     elif answer["userType"] == "Promote Employee":
         print("promEmpMenu()")
     else:
-        employeeManagerMainMenu(result[0], result[4])
+        employeeManagerMainMenu(empID, storeID)
 
-def invManMenu(result[0], result[4]):
+def invManMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
                 choices=['Add Plants', 'Delete Plants', 'Update Plants', 'Show Plants', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Add Plants":
-        addPlantsMenu(result[0], result[4])
+        addPlantsMenu(empID, storeID)
     elif answer["userType"] == "Delete Plants":
-        deletePlantsMenu(result[0], result[4])
+        deletePlantsMenu(empID, storeID)
     elif answer["userType"] == "Update Plants":
-        updatePlantsMenu(result[0], result[4])
+        updatePlantsMenu(empID, storeID)
     elif answer["userType"] == "Show Plants":
-        showPlantsMenu(result[0], result[4])
+        showPlantsMenu(empID, storeID)
     else:
-        employeeManagerMainMenu(result[0], result[4])
+        employeeManagerMainMenu(empID, storeID)
 
-def addPlantsMenu(result[0], result[4]):
+def addPlantsMenu(empID, storeID):
     questions = [
         inquirer.Text('name', message="What's the plant name?"),
         inquirer.Text('price', message="What's the plant price?"),
         inquirer.Text('description', message="What's the plant description?"),
         inquirer.Text('age', message="What's the plant age?"),]
     answers = inquirer.prompt(questions)
-    nursery.add_plant(answers["name"], answers["price"], answers["description"], answers["age"])
+    nursery.insert_plant(answers["name"], answers["price"], answers["description"], answers["age"])
+    #getplantName(name)
+    #insert into plant locator
+    #nursery.insert_plant_locator(store_id, lot_id, plant_id)
     print(answers["name"], "added!")
-    invManMenu(result[0], result[4])
+    invManMenu(empID, storeID)
 
-def deletePlantsMenu(result[0], result[4]):
+def deletePlantsMenu(empID, storeID):
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
@@ -200,13 +213,14 @@ def deletePlantsMenu(result[0], result[4]):
         for id, name in plantDict.items():
             print(id, name, plant_name)
             if name == plant_name:
+                print(id, name)
                 nursery.delete_plant(id)
                 break
     print(answerList, "deleted!")
-    invManMenu(result[0], result[4])
+    invManMenu(empID, storeID)
     
 
-def updatePlantsMenu(result[0], result[4]):
+def updatePlantsMenu(empID, storeID):
     #plantList=[]
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
@@ -231,7 +245,7 @@ def updatePlantsMenu(result[0], result[4]):
     for i in range(len(answerList[0])):
         plant_name = answerList[i]
         for id, name in plantDict.items():
-            print(id, name, plant_name)
+            # print(id, name, plant_name)
             if name == plant_name:
                 questions = [
                             inquirer.Text('price', message="What's the plant price?"),
@@ -242,9 +256,9 @@ def updatePlantsMenu(result[0], result[4]):
                 nursery.update_plant(id, name, price=answerList[0], description=answerList[1], age=answerList[2])
                 break
     print(answerList, "updated!")
-    invManMenu(result[0], result[4])
+    invManMenu(empID, storeID)
 
-def showPlantsMenu(result[0], result[4]):
+def showPlantsMenu(empID, storeID):
     sql = "SELECT p.name, p.price, p.description, p.age FROM plant p"#, plants_locator l WHERE l.store_id = %s"
     try:
         cursor.execute(sql) #, storeID)
@@ -253,7 +267,8 @@ def showPlantsMenu(result[0], result[4]):
             print(row)
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
-    invManMenu(result[0], result[4])
+    
+    invManMenu(empID, storeID)
 
 def customerStart():
         # ask customer if they want to sign up or sign in

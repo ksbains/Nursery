@@ -15,9 +15,9 @@ cursor = mydb.cursor()
 
 
 #-----------------------------------------------INSERT into TABLES------------------------------------------------------------
-def insert_plant(name, price, description, age, lot_id):
-	sql = "INSERT INTO plant(name, price, description, age, lot_id) VALUES(%s,%s,%s,%s, %s)"
-	cursor.execute(sql, (name, price, description, age, lot_id))
+def insert_plant(name, price, description, age):
+	sql = "INSERT INTO plant(name, price, description, age) VALUES(%s,%s,%s,%s)"
+	cursor.execute(sql, (name, price, description, age))
 	mydb.commit()
 
 def insert_plant_type(name, description):
@@ -64,7 +64,7 @@ def insert_employee(emp_name, emp_username, emp_password, store_id, doj, phone_n
 
 #---------------------------------------------------------UPDATE Tables---------------------------------------------------------------------------
 def update_plant(id, name, price, description, age):
-	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE id = %s"
+	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE plant_id = %s"
 	cursor.execute(sql, (name, price, description, age, id))
 	mydb.commit()
 
@@ -114,7 +114,7 @@ def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj,
 
 #-------------------------------------------------------------------------------------DELETE from Tables-----------------------------------------------
 def delete_plant(id):
-	sql = "DELETE FROM plant WHERE id = %s"
+	sql = "DELETE FROM plant WHERE plant_id = %s"
 	cursor.execute(sql, (id,))
 	mydb.commit()
 
@@ -162,6 +162,21 @@ def getPlant(id, field):
 		result = cursor.fetchone()
 		switch={
 		"name": result[1],
+		"price": result[2],
+		"description": result[3],
+		"age": result[4]
+		}
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+def getPlantName(name, field):
+	sql = "SELECT * FROM plant WHERE name = %s"
+	try:
+		cursor.execute(sql, (name,))
+		result = cursor.fetchone()
+		switch={
+		"plant_id": result[0],
 		"price": result[2],
 		"description": result[3],
 		"age": result[4]
@@ -434,46 +449,7 @@ def verify_password(stored_password, provided_password):
 
 
 def startup():
-	#STORE
-	storeLots = 50
-	storePhoneNo = "0123456789"
-	storeAddress = "2341 Redneck Dr."
 
-	#LOT
-	lotStoreId = 1
-
-	#PLANTS
-	plantName = "queenPalm"
-	plantPrice = 25.50
-	plantDescription = "YAASSS QUEEEN!!"
-	plantAge = 21
-	plantLotId = 1
-
-	#PLANT TYPES
-	plantTypeName = "tree"
-	plantTypeDescription = "tall plant"
-
-	#CUSTOMER
-	customerName = "jeff"
-	customerUserName = "jefe"
-	customerPassword = "myNameJeff"
-	customerPhoneNo = "0123456789"
-	customerAddress = "1234 Robin Wy."
-	customerEmail = "jeff@gmail.com"
-	
-	#ORDERS
-	OrderStoreId = 1
-	OrderCustId = 1
-	OrderType = "single"
-	OrderPaymentStatus = "Paid"
-	OrderPrice = 120.99
-	OrderDeliveryAddress = "5738 Applegate Ave."
-
-	#ORDER_ITEM
-	OrderID = 1
-	OrderPlantID = 1
-	OrderItemPrice = 123.67
-	OrderRating = 4.5
 
 	#EMPLOYEE
 	EmployeeName = "Bee"
@@ -483,17 +459,10 @@ def startup():
 	EmployeeDOJ = "2000-01-25"
 	EmployeePhoneNo = "0123456789"
 	EmployeeDesignation = "Worker"
-	EmployeeSupervisor = 4
 
 	
-	insert_store(storeLots, storePhoneNo, storeAddress)
-	insert_lot(lotStoreId)
-	insert_plant(plantName, plantPrice, plantDescription, plantAge, plantLotId)
-	insert_plant_type(plantTypeName, plantTypeDescription)
-	insert_customer(customerName, customerUserName, customerPassword, customerPhoneNo, customerAddress, customerEmail)
-	insert_orders(OrderStoreId, OrderCustId, OrderType, OrderPaymentStatus, OrderPrice, OrderDeliveryAddress)
-	insert_order_item(OrderID, OrderPlantID, OrderItemPrice, OrderRating)
-	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, EmployeeSupervisor)
+	
+	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, None)
 
 #---------------------------------------------------------------------------------TEST SCRIPTS--------------------------------------------------------
 def main():
