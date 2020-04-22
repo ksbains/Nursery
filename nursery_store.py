@@ -1,10 +1,6 @@
 import inquirer
-# from pyfiglet import figlet_format
 from prettytable import PrettyTable
 import mysql.connector
-
-# print(figlet_format('Green Ivy', font='slant'))
-# print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -15,7 +11,6 @@ mydb = mysql.connector.connect(
 )
 
 cursor = mydb.cursor()
-
 # -------------------------------------GET PLANT TYPES FROM LOCATION-------------------------------------------
 
 def getAllPlantTypes(custID, store_location):
@@ -34,7 +29,6 @@ def getAllPlantTypes(custID, store_location):
 
     else:
         types = tuple(plant_type)
-        #plants = fetchPlantsByType(store_location, plant_type)
         plants = fetchPlantsByType(store_location, types)
 
         plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
@@ -82,7 +76,6 @@ def getAllPriceRanges(custID, store_location):
 
 # ---------------------------------------GET ALL PLANTS FROM LOCATION--------------------------------------
 def getAllPlants(custID, store_location):
-    # print("Method definition: location:"+store_location)
     plants = fetchAllPlants(store_location)
 
     plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
@@ -103,7 +96,7 @@ def getPlantsFromLocation(custID, store_location):
     questions = [
         inquirer.List('categry',
                       message="Shop By Category",
-                      choices=['Plant Type', 'Price Range', 'Show all varities from the Location'],
+                      choices=['Plant Type', 'Price Range', 'Show all varities from the Location', 'Back'],
                       )
     ]
     answers = inquirer.prompt(questions)
@@ -115,6 +108,9 @@ def getPlantsFromLocation(custID, store_location):
         getAllPriceRanges(custID, store_location)
     elif category == 'Show all varities from the Location':
         getAllPlants(custID, store_location)
+    elif category == 'Back':
+        searchPlants(custID)
+
 
 
 # ------------------------------------INITIAL STORE LIST AND PLANT TYPE LIST--------------------------------------
@@ -232,8 +228,6 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
         sql = "INSERT INTO order_item(order_id, quantity, plant_id, price) VALUES(%s, %s, %s, %s)"
         cursor.execute(sql, (order_id, "1", i[0], i[2]))
         mydb.commit()
-    #print("order id is:",order_id)
-
 
 # ------------------------------MAIN METHOD - SELECT STORE LOCATION-----------------------------------
 def searchPlants(custID):
@@ -258,8 +252,7 @@ def makeOrders(custID, store_location, plant_ids):
         order_amount = order_amount+i[2];
 
     print("Great! Let's get you through the final steps of your order!")
-    print("You have ordered for", ", ".join(item[1] for item in orders), "and the total order amount is $"+str(order_amount)+"\n" )
-    #print("and the total order amount is", order_amount, "\n")
+    print("You have ordered for", ", ".join(item[1] for item in orders), "and the total order amount is $"+str(order_amount)+"\n")
 
     questions = [
         inquirer.List('odr_typ',
@@ -287,7 +280,7 @@ def makeOrders(custID, store_location, plant_ids):
         elif order_address == "No":
             questions = [
                 inquirer.Text('addr', message="Enter the Delivery Address:")
-                ]
+            ]
             answers = inquirer.prompt(questions)
             address = answers.get('addr')
 
@@ -333,7 +326,7 @@ def prGreen(skk): print("\033[32m {}\033[00m" .format(skk))
 def choiceForOrders(custID, store_location, plants):
     questions = [
         inquirer.Checkbox('order_yes',
-                          message="Please go ahead and select your favourites",
+                          message="Select your favourites: <space> to select, and <space> again to toggle",
                           choices=plants
                           )
     ]
@@ -342,12 +335,13 @@ def choiceForOrders(custID, store_location, plants):
 
     if not orders:
         prRed("Please select a plant to order!! \n")
-        choiceForOrders(custID, store_location, plants)
+        orders = choiceForOrders(custID, store_location, plants)
     else:
         order_size = len(orders)
         if order_size > 5:
             prRed("You can select only upto 5 plants!")
-            choiceForOrders(custID, store_location, plants)
+            orders = choiceForOrders(custID, store_location, plants)
 
     return orders
+
 #searchPlants("1")
