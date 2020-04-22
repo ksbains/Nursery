@@ -141,7 +141,7 @@ def customerSignIn():
                 print("You are an IMPOSTER!!")
                 customerStart()
         
-        if nusery.verify_password(result[3], custPassword):
+        if nursery.verify_password(result[3], custPassword):
                 customerMainMenu(result[0])
         else:
                 print("Incorrect Password!!! Try again")
@@ -229,7 +229,7 @@ def store(custID):
         customerMainMenu(custID)
         
 def startScript():
-        nursery.startup()
+        # nursery.startup()
         # nursery.main()
         mainMenu()
 
