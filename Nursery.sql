@@ -68,6 +68,8 @@ create table orders (
    order_status varchar(20),
    payment_status varchar(20),
    price decimal(10,2),
+   expected_delivery_date date,
+   delivered_on date,
    delivery_address varchar(70),
    primary key(order_id),
    foreign key(store_id) references store(store_id) ON DELETE set null,
