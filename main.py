@@ -1,8 +1,6 @@
 import nursery
 import inquirer
 
-
-
 def mainMenu():
         questions = [inquirer.List(
                 'userType', 
@@ -46,7 +44,7 @@ def employeeSignIn():
                 print("You are an IMPOSTER!!")
                 employeeStart()
         
-        if result[3] == empPassword:
+        if nursery.verify_password(result[3],empPassword):
                 if not result[8]:
                         employeeManagerMainMenu(result[0], result[4])
                 else:
@@ -143,7 +141,7 @@ def customerSignIn():
                 print("You are an IMPOSTER!!")
                 customerStart()
         
-        if result[3] == custPassword:
+        if nusery.verify_password(result[3], custPassword):
                 customerMainMenu(result[0])
         else:
                 print("Incorrect Password!!! Try again")
@@ -231,7 +229,7 @@ def store(custID):
         customerMainMenu(custID)
         
 def startScript():
-        #nursery.startup()
+        nursery.startup()
         # nursery.main()
         mainMenu()
 
