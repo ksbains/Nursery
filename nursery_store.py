@@ -79,7 +79,7 @@ def getAllPriceRanges(custID, store_location):
 
 # ---------------------------------------GET ALL PLANTS FROM LOCATION--------------------------------------
 def getAllPlants(custID, store_location):
-  plants = fetchAllPlants(store_location)
+	plants = fetchAllPlants(store_location)
 
 	plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
 
@@ -251,12 +251,12 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 	conn = getConnection()
 	cursor = conn.cursor()
 
-  store_id = fetchStoreId(store_location)
-  store_id = store_id[0]
-  order_status = "New"
+	store_id = fetchStoreId(store_location)
+	store_id = store_id[0]
+	order_status = "New"
 
-  sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
-  cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
+	sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
+	cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
 	conn.commit()
 
 	order_id = cursor.lastrowid
