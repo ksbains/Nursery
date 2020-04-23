@@ -3,15 +3,15 @@ import inquirer
 from prettytable import PrettyTable
 
 
-mydb = mysql.connector.connect(
-	host="localhost",
-	user="root",
-	passwd="password",
-	database="nursery"
-)
-
-cursor = mydb.cursor()
-
+def getConnection():	
+	conn = mysql.connector.connect(
+		host="localhost",
+		user="root",
+		passwd="***",
+		database="nursery"
+	)
+	#cursor = conn.cursor()
+	return conn
 
 #---------------------------- Utility methods ---------------------------------------------
 
@@ -28,8 +28,8 @@ def processOrderResult(orderResult):
 				'order_status' : row[5],
 				'payment_status' : row[6],
 				'price' : row[7],
-				'delivered_on' : row[8],
-				'expected_delivery' : row[9],
+				'expected_delivery' : row[8],
+				'delivered_on' : row[9],				
 				'address' : row[10]
 			}
 			ordersDict.append(record)
@@ -42,8 +42,8 @@ def processItemResult(itemResult):
 	for row in itemResult:
 			record={
 				'item_id' : row[0],
-				'order_id' : row[1],
-				'plant_id' : row[2],				
+				'name' : row[1],
+				'type_name' : row[2],				
 				'quantity' : row[3],
 				'price' : row[4],
 				'rating' : row[5]
@@ -61,9 +61,13 @@ def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
 def getAllOrders():
 	sql = "SELECT * FROM orders"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		orders = cursor.fetchall()
 		ordersDict = processOrderResult(orders)
+		cursor.close()
+		conn.close()
 		return ordersDict
 	except mysql.connector.Error as err:
 		prRed("Error fetching orders for employee!")
@@ -74,8 +78,12 @@ def getAllOrders():
 def getOrder(orderId):
 	sql = "SELECT * FROM orders WHERE order_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (orderId,))
 		orderDetails = cursor.fetchone()
+		cursor.close()
+		conn.close()
 		return orderDetails
 	except mysql.connector.Error as err:
 		prRed("Error fetching order for id")
@@ -88,8 +96,12 @@ def updateDeliveredOrder(orderId, status, date):
 	sql = "UPDATE orders SET order_status = %s, delivered_on = %s WHERE order_id = %s"
 	parameters = (status, date, orderId)
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, parameters)
-		mydb.commit()
+		conn.commit()
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		prRed("Error updating order status and delivered on date!")
 		prRed("MYSQL ERROR: {}".format(err))
@@ -101,8 +113,12 @@ def updateCurrentOrder(orderId, status, date):
 	sql = "UPDATE orders SET order_status = %s, expected_delivery_date = %s WHERE order_id = %s"
 	parameters = (status, date, orderId)
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, parameters)
-		mydb.commit()
+		conn.commit()
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		prRed("Error updating order status and expected date!")
 		prRed("MYSQL ERROR: {}".format(err))
@@ -113,9 +129,13 @@ def updateCurrentOrder(orderId, status, date):
 def getOrderForGivenCust(cust_id):
 	sql = "SELECT * FROM orders WHERE cust_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (cust_id,))
 		result = cursor.fetchall()		
 		ordersDict = processOrderResult(result)
+		cursor.close()
+		conn.close()
 		return ordersDict
 	except mysql.connector.Error as err:
 		prRed("Error fetching orders for customer!")
@@ -127,10 +147,14 @@ def getOrderForGivenCust(cust_id):
 def getOrderForGivenCustAndStatus(cust_id, orderStatus):
 	sql = "SELECT * FROM orders WHERE cust_id = %s AND order_status = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		parameters = (cust_id, orderStatus)
 		cursor.execute(sql, parameters)
 		result = cursor.fetchall()
 		ordersDict = processOrderResult(result)
+		cursor.close()
+		conn.close()
 		return ordersDict
 	except mysql.connector.Error as err:
 		prRed("Error fetching orders for customer with given order status!")
@@ -140,11 +164,18 @@ def getOrderForGivenCustAndStatus(cust_id, orderStatus):
 
 #Order item menu for given order id and customer
 def getItemsForGivenOrderId(order_id):
-	sql = "SELECT * FROM order_item WHERE order_id = %s"
+	sql = '''SELECT i.item_id, p.name, t.type_name, i.quantity, i.price, i.rating
+			FROM order_item i JOIN plant p ON p.plant_id = i.plant_id 
+			JOIN plant_type t ON t.type_id = p.p_type_id
+			WHERE i.order_id = %s'''
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		parameters = (order_id,)
 		cursor.execute(sql, parameters)
-		result = cursor.fetchall()		
+		result = cursor.fetchall()	
+		cursor.close()
+		conn.close()
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error fetching order items for customer of given order id!")
@@ -156,9 +187,13 @@ def getItemsForGivenOrderId(order_id):
 def updateItemRating(itemId, rating):
 	sql = "UPDATE order_item SET rating = %s WHERE item_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		parameters = (rating, itemId)
 		cursor.execute(sql, parameters)
-		mydb.commit()
+		conn.commit()
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		prRed("Error updating order item rating!")
 		prRed("MYSQL ERROR: {}".format(err))
@@ -168,9 +203,9 @@ def updateItemRating(itemId, rating):
 
 #Print orders given customer id
 def printOrderForCust(ordersDict):
-	order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price'])
+	order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price', 'Expected Delivery Date', 'Delivered On', 'Delivery Address'])
 	for x in ordersDict:
-		order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["order_status"], x["payment_status"], x["price"]])		
+		order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["order_status"], x["payment_status"], x["price"], x["expected_delivery"], x["delivered_on"], x["address"]])		
 	print(order_table)
 	print("\n")
 
@@ -178,33 +213,33 @@ def printOrderForCust(ordersDict):
 #Print orders of given status and customer id
 def printOrderForCustGivenStatus(ordersDict, orderStatus):
 	if orderStatus == 'Current' or orderStatus == 'Dispatched' or orderStatus == 'New':
-		order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Payment Status', 'Price', 'Expected Delivery Date'])
+		order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Payment Status', 'Price', 'Expected Delivery Date', 'Delivery Address'])
 		for x in ordersDict:
-			order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["payment_status"], x["price"], x["expected_delivery"]])		
+			order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["payment_status"], x["price"], x["expected_delivery"], x["address"]])		
 		print(order_table)
 		print("\n")
 	elif orderStatus == 'Completed':
-		order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Payment Status', 'Price', 'Delivered On'])
+		order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Payment Status', 'Price', 'Delivered On', 'Delivery Address'])
 		for x in ordersDict:
-			order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["payment_status"], x["price"], x["delivered_on"]])		
+			order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["payment_status"], x["price"], x["delivered_on"], x["address"]])		
 		print(order_table)
 		print("\n")
 
 
 #Print orders of given status and customer id
 def printItems(itemDict):
-	item_table = PrettyTable(['Item Id', 'Plant Id', 'Quantity', 'Price', 'Rating'])	
+	item_table = PrettyTable(['Item Id', 'Plant Name', 'Plant Type', 'Quantity', 'Price', 'Rating'])	
 	for x in itemDict:
-		item_table.add_row([x["item_id"], x["plant_id"], x["quantity"], x["price"], x["rating"]])
+		item_table.add_row([x["item_id"], x["name"], x["type_name"], x["quantity"], x["price"], x["rating"]])
 	print(item_table)
 	print("\n")
 
 
 #print all orders
 def printAllOrders(orders):
-	order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price'])
+	order_table = PrettyTable(['Order Id', 'Order Date', 'Customer Id', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price','Expected Delivery Date', 'Delivered On', 'Delivery Address'])
 	for x in orders:
-		order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["order_status"], x["payment_status"], x["price"]])		
+		order_table.add_row([x["order_id"], x["order_date"], x["cust_id"], x["store_id"], x["order_type"], x["order_status"], x["payment_status"], x["price"], x["expected_delivery"], x["delivered_on"], x["address"]])		
 	print(order_table)
 	print("\n")
 		  

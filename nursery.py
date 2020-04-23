@@ -3,161 +3,258 @@ import hashlib
 import binascii
 import os
 
-mydb = mysql.connector.connect(
-	host="localhost",
-	user="root",
-	passwd="password",
-	database="nursery"
-)
-
-cursor = mydb.cursor()
-
-
-
+def getConnection():	
+	conn = mysql.connector.connect(
+		host="localhost",
+		user="root",
+		passwd="***",
+		database="nursery"
+	)
+	#cursor = conn.cursor()
+	return conn
+	
 #-----------------------------------------------INSERT into TABLES------------------------------------------------------------
 def insert_plant(name, price, description, age, lot_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "INSERT INTO plant(name, price, description, age, lot_id) VALUES(%s,%s,%s,%s, %s)"
 	cursor.execute(sql, (name, price, description, age, lot_id))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_plant_type(name, description):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "INSERT INTO plant_type(type_name, description) VALUES(%s,%s)"
 	cursor.execute(sql, (name, description))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_store(number_of_lots, phone_no, address):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "INSERT INTO store(number_of_lots, phone_no, address) VALUES(%s,%s,%s)"
 	data = (number_of_lots, phone_no, address)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_lot(store_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "INSERT INTO lot(store_id) VALUES(%s)"
 	cursor.execute(sql, (store_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_customer(cust_name, cust_username, cust_password, phone_no, address, email_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	hashed_password = hash_password(cust_password)
 	sql = "INSERT INTO customer(cust_name,cust_username, cust_password, phone_no, address, email_id) VALUES(%s,%s,%s, %s,%s,%s)"
 	data = (cust_name, cust_username, hashed_password, phone_no, address, email_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_orders(store_id, cust_id, order_type, payment_status, price, delivery_address):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "INSERT INTO orders(store_id, cust_id, order_type, payment_status, price, delivery_address) VALUES(%s, %s, %s, %s, %s, %s)"
 	data = (store_id, cust_id, order_type, payment_status, price, delivery_address)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_order_item(order_id, plant_id, price, rating):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "INSERT INTO order_item(order_id, plant_id,  price, rating) VALUES(%s,%s,%s,%s)"
 	data = (order_id, plant_id,  price, rating)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def insert_employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	hashed_password = hash_password(emp_password)
 	sql = "INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
 	data = (emp_name, emp_username, hashed_password, store_id, doj, phone_no, designation, supervisor_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 #---------------------------------------------------------UPDATE Tables---------------------------------------------------------------------------
 def update_plant(id, name, price, description, age):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE id = %s"
 	cursor.execute(sql, (name, price, description, age, id))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_plant_type (type_id,type_name, description):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "UPDATE plant_type SET type_name = %s, description = %s WHERE type_id = %s"
 	data = (type_name, description,type_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_lot(lot_id, store_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "UPDATE lot SET store_id = %s WHERE lot_id = %s"
 	data = (store_id, lot_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_store(store_id, number_of_lots, phone_no, address):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "UPDATE store SET number_of_lots = %s, phone_no = %s, address = %s WHERE store_id = %s"
 	data = (number_of_lots, phone_no, address, store_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_customer(cust_id, cust_name, cust_username, cust_password, phone_no, address, email_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	hashed_password = hash_password(cust_password)
 	sql = "UPDATE customer SET cust_name = %s, cust_username = %s, cust_password = %s, phone_no = %s, address = %s, email_id = %s WHERE cust_id = %s"
 	data = (cust_name, cust_username, hashed_password, phone_no, address, email_id, cust_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_orders(order_id, store_id, cust_id, order_type, payment_status, price, delivery_address):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "UPDATE orders SET store_id = %s, cust_id = %s, order_type = %s, payment_status = %s, price = %s, delivery_address = %s WHERE order_id = %s"
 	data = (store_id, cust_id, order_type, payment_status, price, delivery_address, order_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_order_item(item_id, order_id,  plant_id, price, rating,):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "UPDATE order_item SET order_id = %s, plant_id = %s, price = %s, rating = %s WHERE item_id = %s "
 	data = (order_id, plant_id,price, rating,  item_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	hashed_password = hash_password(emp_password)
 	sql = "UPDATE employee SET emp_name = %s, emp_username = %s, emp_password = %s, store_id = %s, doj = %s, phone_no = %s, designation = %s, supervisor_id = %s WHERE emp_id = %s"
 	data = (emp_name, emp_username, hashed_password, store_id, doj, phone_no, designation, supervisor_id, emp_id)
 	cursor.execute(sql, data)
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 #-------------------------------------------------------------------------------------DELETE from Tables-----------------------------------------------
 def delete_plant(id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM plant WHERE id = %s"
 	cursor.execute(sql, (id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def delete_plant_type(type_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM plant_type WHERE type_id = %s"
 	cursor.execute(sql, (type_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def delete_lot(lot_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM lot WHERE lot_id = %s"
 	cursor.execute(sql, (lot_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 
 def delete_store(store_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM store WHERE store_id = %s"
 	cursor.execute(sql, (store_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def delete_customer(cust_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM customer WHERE cust_id = %s"
 	cursor.execute(sql, (cust_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def delete_orders(order_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM orders WHERE order_id = %s"
 	cursor.execute(sql, (order_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def delete_order_item(item_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM order_item WHERE item_id = %s"
 	cursor.execute(sql, (item_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 def delete_employee(emp_id):
+	conn = getConnection()
+	cursor = conn.cursor()
 	sql = "DELETE FROM employee WHERE emp_id = %s"
 	cursor.execute(sql, (emp_id,))
-	mydb.commit()
+	conn.commit()
+	cursor.close()
+	conn.close()
 
 #---------------------------------------SELECT from Tables---------------------------------------------------
 def getPlant(id, field):
 	sql = "SELECT * FROM plant WHERE id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (id,))
 		result = cursor.fetchone()
 		switch={
@@ -166,6 +263,8 @@ def getPlant(id, field):
 		"description": result[3],
 		"age": result[4]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -173,12 +272,16 @@ def getPlant(id, field):
 def getPlantType(type_id, field):
 	sql = "SELECT * FROM plant_type WHERE type_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (type_id,))
 		result = cursor.fetchone()
 		switch={
 		"type_name": result[1],
 		"description": result[2]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -186,11 +289,15 @@ def getPlantType(type_id, field):
 def getLot(lot_id, field):
 	sql = "SELECT * FROM lot WHERE lot_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (lot_id,))
 		result = cursor.fetchone()
 		switch={
 		"store_id": result[1],
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -198,6 +305,8 @@ def getLot(lot_id, field):
 def getStore(store_id, field):
 	sql = "SELECT * FROM store WHERE store_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (store_id,))
 		result = cursor.fetchone()
 		switch={
@@ -205,6 +314,8 @@ def getStore(store_id, field):
 		"phone_no": result[2],
 		"address": result[3]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -212,6 +323,8 @@ def getStore(store_id, field):
 def getCustomer(cust_id, field):
 	sql = "SELECT * FROM customer WHERE cust_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (cust_id,))
 		result = cursor.fetchone()
 		switch={
@@ -222,6 +335,8 @@ def getCustomer(cust_id, field):
 		"address": result[5],
 		"email_id": result[6]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -229,6 +344,8 @@ def getCustomer(cust_id, field):
 def getCustomerLogin(username, field):
 	sql = "SELECT * FROM customer WHERE username = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (username,))
 		result = cursor.fetchone()
 		switch={
@@ -239,6 +356,8 @@ def getCustomerLogin(username, field):
 		"address": result[5],
 		"email_id": result[6]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -246,6 +365,8 @@ def getCustomerLogin(username, field):
 def getOrders(order_id, field):
 	sql = "SELECT * FROM orders WHERE order_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (order_id,))
 		result = cursor.fetchone()
 		switch={
@@ -256,6 +377,8 @@ def getOrders(order_id, field):
 		"price": result[5],
 		"delivery_address": result[6]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -263,6 +386,8 @@ def getOrders(order_id, field):
 def getOrderItem(item_id, field):
 	sql = "SELECT * FROM order_item WHERE item_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (item_id,))
 		result = cursor.fetchone()
 		switch={
@@ -271,6 +396,8 @@ def getOrderItem(item_id, field):
 		"price": result[3],
 		"rating": result[4]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -278,6 +405,8 @@ def getOrderItem(item_id, field):
 def getEmployee(emp_id, field):
 	sql = "SELECT * FROM employee WHERE emp_id = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (emp_id,))
 		result = cursor.fetchone()
 		switch={
@@ -290,6 +419,8 @@ def getEmployee(emp_id, field):
 		"designation": result[7],
 		"supervisor_id": result[8]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -297,6 +428,8 @@ def getEmployee(emp_id, field):
 def getEmployeeLogin(username, field):
 	sql = "SELECT * FROM employee WHERE emp_username = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (username,))
 		result = cursor.fetchone()
 		switch={
@@ -309,6 +442,8 @@ def getEmployeeLogin(username, field):
 		"designation": result[7],
 		"supervisor_id": result[8]
 		}
+		cursor.close()
+		conn.close()
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -318,88 +453,124 @@ def getEmployeeLogin(username, field):
 def plants():
 	sql = "SELECT * FROM plant"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def plantTypes():
 	sql = "SELECT * FROM plant_type"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def lots():
 	sql = "SELECT * FROM lot"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def stores():
 	sql = "SELECT * FROM store"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def customers():
 	sql = "SELECT * FROM customer"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def orders():
 	sql = "SELECT * FROM orders"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def orderItems():
 	sql = "SELECT * FROM order_item"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def employees():
 	sql = "SELECT * FROM employee"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		result = cursor.fetchall()
 		for row in result:
 			print(row)
+		cursor.close()
+		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
 def inEmployee(username):
 	sql = "SELECT * FROM employee WHERE emp_username = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (username,))
 		result = cursor.fetchone()
+		cursor.close()
+		conn.close()
 		return result
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -407,8 +578,12 @@ def inEmployee(username):
 def inCustomer(username):
 	sql = "SELECT * FROM customer WHERE cust_username = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (username,))
 		result = cursor.fetchone()
+		cursor.close()
+		conn.close()
 		return result
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))

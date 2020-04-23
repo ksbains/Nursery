@@ -2,15 +2,18 @@ import inquirer
 from prettytable import PrettyTable
 import mysql.connector
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="password",
-    database="nursery",
-    auth_plugin='mysql_native_password'
-)
 
-cursor = mydb.cursor()
+def getConnection():	
+	conn = mysql.connector.connect(
+		host="localhost",
+		user="root",
+		passwd="***",
+		database="nursery"
+	)
+	#cursor = conn.cursor()
+	return conn
+
+
 # -------------------------------------GET PLANT TYPES FROM LOCATION-------------------------------------------
 
 def getAllPlantTypes(custID, store_location):
@@ -45,49 +48,49 @@ def getAllPlantTypes(custID, store_location):
 
 # -----------------------------GET PLANT BELOW PRICE RANGE FROM LOCATION----------------------------------
 def getAllPriceRanges(custID, store_location):
-    questions = [
-        inquirer.List('price_r',
-                      message="Price range",
-                      choices=['Upto 40$', 'Upto 50$', 'Upto 60$', 'Upto 70$', 'Upto 80$', 'Any range'],
-                      )
-    ]
-    answers = inquirer.prompt(questions)
-    price_range = answers.get('price_r')
+	questions = [
+		inquirer.List('price_r',
+					  message="Price range",
+					  choices=['Upto 40$', 'Upto 50$', 'Upto 60$', 'Upto 70$', 'Upto 80$', 'Any range'],
+					  )
+	]
+	answers = inquirer.prompt(questions)
+	price_range = answers.get('price_r')
 
-    price = ""
-    for i in price_range:
-        if i.isdigit():
-            price = "".join([price, i])
+	price = ""
+	for i in price_range:
+		if i.isdigit():
+			price = "".join([price, i])
 
-    if price == "":
-        price = "0"
+	if price == "":
+		price = "0"
 
-    plants = fetchPlantsByPrice(store_location, price)
-    plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
+	plants = fetchPlantsByPrice(store_location, price)
+	plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
 
-    if not plants:
-        prRed("All plants are sold!! \n")
-        searchPlants(custID)
-    else:
-        for i in plants:
-            plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
-        print(plant_type_table)
-        checkForOrders(custID, store_location, plants)
+	if not plants:
+		prRed("All plants are sold!! \n")
+		searchPlants(custID)
+	else:
+		for i in plants:
+			plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
+		print(plant_type_table)
+		checkForOrders(custID, store_location, plants)
 
 # ---------------------------------------GET ALL PLANTS FROM LOCATION--------------------------------------
 def getAllPlants(custID, store_location):
-    plants = fetchAllPlants(store_location)
+  plants = fetchAllPlants(store_location)
 
-    plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
+	plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
 
-    if not plants:
-        prRed("All plants are sold!!\n")
-        searchPlants(custID)
-    else:
-        for i in plants:
-            plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
-        print(plant_type_table)
-        checkForOrders(custID, store_location, plants)
+	if not plants:
+		prRed("All plants are sold!!\n")
+		searchPlants(custID)
+	else:
+		for i in plants:
+			plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
+		print(plant_type_table)
+		checkForOrders(custID, store_location, plants)
 
 
 # -------------------------------------GET PLANTS FROM LOCATION-------------------------------------------
@@ -116,136 +119,171 @@ def getPlantsFromLocation(custID, store_location):
 # ------------------------------------INITIAL STORE LIST AND PLANT TYPE LIST--------------------------------------
 
 def fetchStores():
-    sql = "SELECT address FROM store"
-    try:
-        cursor.execute(sql)
-        result = [item[0] for item in cursor.fetchall()]
-        return (result)
-    except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+	sql = "SELECT address FROM store"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql)
+		result = [item[0] for item in cursor.fetchall()]
+		cursor.close()
+		conn.close()
+		return (result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
 
 
 def fetchStoreId(store_location):
-    sql = "SELECT store_id FROM store where address = %s"
-    try:
-        cursor.execute(sql, (store_location,))
-        result = [item[0] for item in cursor.fetchall()]
-        return (result)
-    except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+	sql = "SELECT store_id FROM store where address = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (store_location,))
+		result = [item[0] for item in cursor.fetchall()]
+		cursor.close()
+		conn.close()
+		return (result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
 
 
 def fetchPlants(plant_ids):
-    t = tuple(plant_ids)
-    if len(plant_ids) == 1:
-        sql = "SELECT plant_id,name,price FROM plant WHERE plant_id = %s"
-        cursor.execute(sql, (plant_ids[0],))
-    elif len(plant_ids) > 1:
-        sql = "SELECT plant_id,name,price FROM plant WHERE plant_id IN {}".format(t)
-        cursor.execute(sql)
-    try:
-        result = cursor.fetchall()
-        return (result)
-    except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+	conn = getConnection()
+	cursor = conn.cursor()
+	t = tuple(plant_ids)
+	if len(plant_ids) == 1:
+		sql = "SELECT plant_id,name,price FROM plant WHERE plant_id = %s"
+		cursor.execute(sql, (plant_ids[0],))
+	elif len(plant_ids) > 1:
+		sql = "SELECT plant_id,name,price FROM plant WHERE plant_id IN {}".format(t)
+		cursor.execute(sql)
+	try:
+		result = cursor.fetchall()
+		cursor.close()
+		conn.close()
+		return (result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
 
 
 def fetchPlantTypes():
-    sql = "SELECT type_name FROM plant_type"
-    try:
-        cursor.execute(sql)
-        result = [item[0] for item in cursor.fetchall()]
-        return (result)
-    except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+	sql = "SELECT type_name FROM plant_type"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql)
+		result = [item[0] for item in cursor.fetchall()]
+		cursor.close()
+		conn.close()
+		return (result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
 
 
 def fetchPlantsByType(store_location, plant_type):
-
-    if not plant_type:
-        return None
-    else:
-        if len(plant_type) == 1:
-            sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s and t.type_name = %s"
-            cursor.execute(sql, (store_location,plant_type[0]))
-        elif len(plant_type) > 1:
-            sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s and t.type_name IN {}".format(plant_type)
-            cursor.execute(sql, (store_location,))
-        try:
-            result = cursor.fetchall()
-            return (result)
-        except mysql.connector.Error as err:
-            print("MYSQL ERROR: {}".format(err))
+	conn = getConnection()
+	cursor = conn.cursor()
+	if not plant_type:
+		return None
+	else:
+		if len(plant_type) == 1:
+			sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s and t.type_name = %s"
+			cursor.execute(sql, (store_location,plant_type[0]))
+		elif len(plant_type) > 1:
+			sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s and t.type_name IN {}".format(plant_type)
+			cursor.execute(sql, (store_location,))
+		try:
+			result = cursor.fetchall()
+			cursor.close()
+			conn.close()
+			return (result)
+		except mysql.connector.Error as err:
+			print("MYSQL ERROR: {}".format(err))
 
 
 def fetchPlantsByPrice(store_location, price):
-    if price == "0":
-        result = fetchAllPlants(store_location)
-        return (result)
-    else:
-        sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s and p.price <= %s"
-        try:
-            cursor.execute(sql, (store_location, price))
-            result = cursor.fetchall()
-            return (result)
-        except mysql.connector.Error as err:
-            print("MYSQL ERROR: {}".format(err))
+	conn = getConnection()
+	cursor = conn.cursor()
+	if price == "0":
+		result = fetchAllPlants(store_location)
+		return (result)
+	else:
+		sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s and p.price <= %s"
+		try:
+			cursor.execute(sql, (store_location, price))
+			result = cursor.fetchall()
+			cursor.close()
+			conn.close()
+			return (result)
+		except mysql.connector.Error as err:
+			print("MYSQL ERROR: {}".format(err))
+
 
 
 def fetchAllPlants(store_location):
-    sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s"
-    try:
-        cursor.execute(sql, (store_location,))
-        result = cursor.fetchall()
-        return (result)
-    except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+	sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (store_location,))
+		result = cursor.fetchall()
+		cursor.close()
+		conn.close()
+		return (result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
 
 
 def fetchCustomerAddress(custID):
-    sql = "select address from customer where cust_id = %s"
-    try:
-        cursor.execute(sql, (custID,))
-        result = [item[0] for item in cursor.fetchall()]
-        return (result)
-    except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+	sql = "select address from customer where cust_id = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (custID,))
+		result = [item[0] for item in cursor.fetchall()]
+		cursor.close()
+		conn.close()
+		return (result)
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
 
 # ---------------------------- STORING ORDER DETAILS --------------------------------------
 def saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, plants):
+	conn = getConnection()
+	cursor = conn.cursor()
 
-    store_id = fetchStoreId(store_location)
-    store_id = store_id[0]
-    order_status = "New"
+  store_id = fetchStoreId(store_location)
+  store_id = store_id[0]
+  order_status = "New"
 
-    sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
-    cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
-    mydb.commit()
+  sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
+  cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
+	conn.commit()
 
-    order_id = cursor.lastrowid
-
-    for i in plants:
-        sql = "INSERT INTO order_item(order_id, quantity, plant_id, price) VALUES(%s, %s, %s, %s)"
-        cursor.execute(sql, (order_id, "1", i[0], i[2]))
-        mydb.commit()
+	order_id = cursor.lastrowid
+	for i in plants:
+		sql = "INSERT INTO order_item(order_id, quantity, plant_id, price) VALUES(%s, %s, %s, %s)"
+		cursor.execute(sql, (order_id, "1", i[0], i[2]))
+		conn.commit()
+	cursor.close()
+	conn.close()
 
 # ------------------------------MAIN METHOD - SELECT STORE LOCATION-----------------------------------
 def searchPlants(custID):
-    print("Locate your nearby Store")
-    questions = [
-        inquirer.List('store_loc',
-                      message="Store Locations",
-                      choices=fetchStores()
-                      )
-    ]
-    answers = inquirer.prompt(questions)
-    store_location = answers.get('store_loc')
+	print("Locate your nearby Store")
+	questions = [
+		inquirer.List('store_loc',
+					  message="Store Locations",
+					  choices=fetchStores()
+					  )
+	]
+	answers = inquirer.prompt(questions)
+	store_location = answers.get('store_loc')
 
-    if answers is not None:
-        getPlantsFromLocation(custID, store_location)
+	if answers is not None:
+		getPlantsFromLocation(custID, store_location)
+
 
 def makeOrders(custID, store_location, plant_ids):
-
     orders = fetchPlants(plant_ids)
     order_amount = 0;
     for i in orders:
@@ -298,27 +336,28 @@ def makeOrders(custID, store_location, plant_ids):
         prGreen("Your order will be ready for pick-up in our "+store_location+" store in 4 hours.")
         prGreen("Checkout our hot selling plants section! \n")
 
+        
 def checkForOrders(custID, store_location, plant):
-    questions = [
-        inquirer.List('order_req',
-                      message="Want to make an order?",
-                      choices=['Yes', 'No']
-                      )
-    ]
-    answers = inquirer.prompt(questions)
-    order = answers.get('order_req')
+	questions = [
+		inquirer.List('order_req',
+					  message="Want to make an order?",
+					  choices=['Yes', 'No']
+					  )
+	]
+	answers = inquirer.prompt(questions)
+	order = answers.get('order_req')
 
-    if order == "Yes":
-        plants = []
-        for p in plant:
-            plants.append(tuple(["{} - ${}".format(p[1], p[2]), p[0]]))
+	if order == "Yes":
+		plants = []
+		for p in plant:
+			plants.append(tuple(["{} - ${}".format(p[1], p[2]), p[0]]))
 
-        plant_ids = choiceForOrders(custID, store_location, plants)
-        makeOrders(custID, store_location, plant_ids)
+		plant_ids = choiceForOrders(custID, store_location, plants)
+		makeOrders(custID, store_location, plant_ids)
 
-    elif order == "No":
-        print("Cool! Check out on our other collections! \n")
-        getPlantsFromLocation(custID, store_location)
+	elif order == "No":
+		print("Cool! Check out on our other collections! \n")
+		getPlantsFromLocation(custID, store_location)
 
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
 def prGreen(skk): print("\033[32m {}\033[00m" .format(skk))
@@ -343,5 +382,3 @@ def choiceForOrders(custID, store_location, plants):
             orders = choiceForOrders(custID, store_location, plants)
 
     return orders
-
-#searchPlants("1")
