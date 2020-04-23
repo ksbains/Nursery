@@ -26,10 +26,7 @@ def mainMenu():
         ),]
         answer = inquirer.prompt(questions)
         if answer["userType"] == "Employee":
-                #employeeStart()
-                empID=1
-                storeID=1
-                employeeManagerMainMenu(empID, storeID)
+                employeeStart()
         else:
                 customerStart()
 
