@@ -10,13 +10,15 @@ def mainMenu():
         questions = [inquirer.List(
                 'userType', 
                 message="Are you an Employee or Customer?",
-                choices=['Employee', 'Customer'],
+                choices=['Employee', 'Customer', 'Exit'],
         ),]
         answer = inquirer.prompt(questions)
         if answer["userType"] == "Employee":
                 employeeStart()
-        else:
+        elif answer["userType"] == "Customer":
                 customerStart()
+        else:
+        	print("Thank You! Visit Again!\n")
 
 def employeeStart():
         # ask Employee if they want to sign up or sign in

@@ -4,14 +4,16 @@ from prettytable import PrettyTable
 import nursery_store
 
 
-mydb = mysql.connector.connect(
-	host="localhost",
-	user="root",
-	passwd="***",
-	database="nursery"
-)
 
-cursor = mydb.cursor()
+def getCursor():	
+	conn = mysql.connector.connect(
+		host="localhost",
+		user="root",
+		passwd="***",
+		database="nursery"
+	)
+	cursor = conn.cursor()
+	return cursor
 
 #--------------------------------------- Utility methods ----------------------------------
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
@@ -28,8 +30,10 @@ def getPlantsWithRating():
  		  HAVING avg(i.rating) IS NOT NULL
  		  ORDER BY customer_rating DESC"""
 	try:
+		cursor = getCursor()
 		cursor.execute(sql)
 		plants = cursor.fetchall()
+		cursor.close()
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by rating!")
@@ -44,8 +48,10 @@ def getPlantsOrderMost():
 		  GROUP BY p.plant_id, p.name, t.type_name
 		  ORDER BY ordered_count DESC"""
 	try:
+		cursor = getCursor()
 		cursor.execute(sql)
 		plants = cursor.fetchall()
+		cursor.close()
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by most ordered!")
@@ -61,8 +67,10 @@ def getTopPlantGivenType(plantType):
 		  GROUP BY p.plant_id, p.name, t.type_name
 		  ORDER BY ordered_count DESC"""
 	try:
+		cursor = getCursor()
 		cursor.execute(sql, (plantType,))
 		plants = cursor.fetchall()
+		cursor.close()
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by type!")
@@ -81,8 +89,10 @@ def getTopPlantGivenStore(store):
 		  GROUP BY p.plant_id, p.name, p.price, t.type_name
 		  ORDER BY ordered_count DESC"""
 	try:
+		cursor = getCursor()
 		cursor.execute(sql, (store,))
 		result = cursor.fetchall()
+		cursor.close()
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by store!")
@@ -96,8 +106,10 @@ def getStoresForPlant(plantId):
 		  JOIN store s ON s.store_id = l.store_id
 		  WHERE p.plant_id = %s"""
 	try:
+
 		cursor.execute(sql, (plantId,))
 		result = cursor.fetchall()
+		cursor.close()
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error in fetching stores for given plant!")
