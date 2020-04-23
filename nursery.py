@@ -15,9 +15,9 @@ cursor = mydb.cursor()
 
 
 #-----------------------------------------------INSERT into TABLES------------------------------------------------------------
-def insert_plant(name, price, description, age, lot_id):
-	sql = "INSERT INTO plant(name, price, description, age, lot_id) VALUES(%s,%s,%s,%s, %s)"
-	cursor.execute(sql, (name, price, description, age, lot_id))
+def insert_plant(name, price, description, age):
+	sql = "INSERT INTO plant(name, price, description, age) VALUES(%s,%s,%s,%s)"
+	cursor.execute(sql, (name, price, description, age))
 	mydb.commit()
 
 def insert_plant_type(name, description):
@@ -64,7 +64,7 @@ def insert_employee(emp_name, emp_username, emp_password, store_id, doj, phone_n
 
 #---------------------------------------------------------UPDATE Tables---------------------------------------------------------------------------
 def update_plant(id, name, price, description, age):
-	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE id = %s"
+	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE plant_id = %s"
 	cursor.execute(sql, (name, price, description, age, id))
 	mydb.commit()
 
@@ -114,7 +114,7 @@ def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj,
 
 #-------------------------------------------------------------------------------------DELETE from Tables-----------------------------------------------
 def delete_plant(id):
-	sql = "DELETE FROM plant WHERE id = %s"
+	sql = "DELETE FROM plant WHERE plant_id = %s"
 	cursor.execute(sql, (id,))
 	mydb.commit()
 
@@ -156,7 +156,7 @@ def delete_employee(emp_id):
 
 #---------------------------------------SELECT from Tables---------------------------------------------------
 def getPlant(id, field):
-	sql = "SELECT * FROM plant WHERE id = %s"
+	sql = "SELECT * FROM plant WHERE plant_id = %s"
 	try:
 		cursor.execute(sql, (id,))
 		result = cursor.fetchone()
