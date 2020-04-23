@@ -10,7 +10,6 @@ def getConnection():
 		passwd="***",
 		database="nursery"
 	)
-	#cursor = conn.cursor()
 	return conn
 	
 #-----------------------------------------------INSERT into TABLES------------------------------------------------------------

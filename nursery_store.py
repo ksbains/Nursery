@@ -10,7 +10,6 @@ def getConnection():
 		passwd="***",
 		database="nursery"
 	)
-	#cursor = conn.cursor()
 	return conn
 
 
@@ -270,16 +269,17 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 # ------------------------------MAIN METHOD - SELECT STORE LOCATION-----------------------------------
 def searchPlants(custID):
 	print("Locate your nearby Store")
+	stores = fetchStores()
+	stores.append('Back')
 	questions = [
 		inquirer.List('store_loc',
 					  message="Store Locations",
-					  choices=fetchStores()
-					  )
+					  choices=stores					  )
 	]
 	answers = inquirer.prompt(questions)
 	store_location = answers.get('store_loc')
 
-	if answers is not None:
+	if store_location != 'Back':
 		getPlantsFromLocation(custID, store_location)
 
 
