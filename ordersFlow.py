@@ -203,7 +203,7 @@ def updateItemRating(itemId, rating):
 
 #Print orders given customer id
 def printOrderForCust(ordersDict):
-	order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price', 'Expected Delivery Date', 'Delivered On', 'Delivery Address'])
+	order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price', 'Expected By', 'Delivered On', 'Delivery Address'])
 	for x in ordersDict:
 		order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["order_status"], x["payment_status"], x["price"], x["expected_delivery"], x["delivered_on"], x["address"]])		
 	print(order_table)
@@ -213,7 +213,7 @@ def printOrderForCust(ordersDict):
 #Print orders of given status and customer id
 def printOrderForCustGivenStatus(ordersDict, orderStatus):
 	if orderStatus == 'Current' or orderStatus == 'Dispatched' or orderStatus == 'New':
-		order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Payment Status', 'Price', 'Expected Delivery Date', 'Delivery Address'])
+		order_table = PrettyTable(['Order Id', 'Order Date', 'Store Id', 'Order Type', 'Payment Status', 'Price', 'Expected By', 'Delivery Address'])
 		for x in ordersDict:
 			order_table.add_row([x["order_id"], x["order_date"], x["store_id"], x["order_type"], x["payment_status"], x["price"], x["expected_delivery"], x["address"]])		
 		print(order_table)
@@ -237,7 +237,7 @@ def printItems(itemDict):
 
 #print all orders
 def printAllOrders(orders):
-	order_table = PrettyTable(['Order Id', 'Order Date', 'Customer Id', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price','Expected Delivery Date', 'Delivered On', 'Delivery Address'])
+	order_table = PrettyTable(['Order Id', 'Order Date', 'Customer Id', 'Store Id', 'Order Type', 'Order Status', 'Payment Status', 'Price','Expected By', 'Delivered On', 'Delivery Address'])
 	for x in orders:
 		order_table.add_row([x["order_id"], x["order_date"], x["cust_id"], x["store_id"], x["order_type"], x["order_status"], x["payment_status"], x["price"], x["expected_delivery"], x["delivered_on"], x["address"]])		
 	print(order_table)
@@ -354,23 +354,27 @@ def showEmployeeOrders():
 	ans = answer.get('option')
 
 	orders = getAllOrders()
-	printAllOrders(orders)
-
-	if ans == 'Update':
-		aOrderIds = []
-		for x in orders:
-			aOrderIds.append(x["order_id"])
-		aOrderIds.append('Back')
-		questions = [
-			inquirer.List(
-				'orderId',
-				message = 'Which order do you want to update?',
-				choices = aOrderIds
-				)
-		]
-		answers = inquirer.prompt(questions)
-		orderIdAnswer = answers.get('orderId')
-		updateOrderMenu(orderIdAnswer)
+	if len(orders) != 0:
+		printAllOrders(orders)
+		if ans == 'Update':
+			aOrderIds = []
+			for x in orders:
+				aOrderIds.append(x["order_id"])
+			aOrderIds.append('Back')
+			questions = [
+				inquirer.List(
+					'orderId',
+					message = 'Which order do you want to update?',
+					choices = aOrderIds
+					)
+			]
+			answers = inquirer.prompt(questions)
+			orderIdAnswer = answers.get('orderId')
+			updateOrderMenu(orderIdAnswer)
+		elif ans == 'View':
+			showEmployeeOrders()
+	else:
+		prRed("There are no orders available to view or update!\n")
 
 
 
