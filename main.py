@@ -110,8 +110,27 @@ def employeeSignUp():
         employeePhone_no = answers['phone_no']
         employeeStart = "2020-04-27"
         employeeJob = "Sales Associate"
-        employeeStoreID = 1
-        employeeManager = 4
+
+        question1 = [inquirer.List(
+                'employeeLocation',
+                message="Which location do you work at?",
+                choices=['San Jose', 'Alameda', 'Fresno', 'Napa', 'Oakland', 'Monterey', 'Santa Clara'],
+        ),]
+        answer1 = inquirer.prompt(question1)
+        
+        switch={
+        'San Jose': 1, 
+        'Alameda': 2, 
+        'Fresno': 3, 
+        'Napa': 4, 
+        'Oakland': 5, 
+        'Monterey': 6, 
+        'Santa Clara': 7
+        }
+
+        employeeInfo = switch.get(answer1["employeeLocation"], 1)
+        employeeStoreID = employeeInfo
+        employeeManager = employeeInfo
 
         # insert_employee(store_id, supervisor_id)
         nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
