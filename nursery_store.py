@@ -1,10 +1,7 @@
 import inquirer
-# from pyfiglet import figlet_format
 from prettytable import PrettyTable
 import mysql.connector
 
-# print(figlet_format('Green Ivy', font='slant'))
-# print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
 
 def getConnection():	
 	conn = mysql.connector.connect(
@@ -16,38 +13,38 @@ def getConnection():
 	#cursor = conn.cursor()
 	return conn
 
+
 # -------------------------------------GET PLANT TYPES FROM LOCATION-------------------------------------------
 
 def getAllPlantTypes(custID, store_location):
-	questions = [
-		inquirer.Checkbox('p_type',
-						  message="Plant Types: <space> to select, and <space> again to toggle",
-						  choices=fetchPlantTypes(),
-						  )
-	]
-	answers = inquirer.prompt(questions)
-	plant_type = answers.get('p_type')
+    questions = [
+        inquirer.Checkbox('p_type',
+                          message="Plant Types: <space> to select, and <space> again to toggle",
+                          choices=fetchPlantTypes(),
+                          )
+    ]
+    answers = inquirer.prompt(questions)
+    plant_type = answers.get('p_type')
 
-	if not plant_type:
-		prRed("Please select a type!! \n")
-		getAllPlantTypes(custID, store_location)
+    if not plant_type:
+        prRed("Please select a type!! \n")
+        getAllPlantTypes(custID, store_location)
 
-	else:
-		types = tuple(plant_type)
-		#plants = fetchPlantsByType(store_location, plant_type)
-		plants = fetchPlantsByType(store_location, types)
+    else:
+        types = tuple(plant_type)
+        plants = fetchPlantsByType(store_location, types)
 
-		plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
+        plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
 
-		if not plants:
-			prRed("All plants are sold!! \n")
-			searchPlants(custID)
+        if not plants:
+            prRed("All plants are sold!! \n")
+            searchPlants(custID)
 
-		else:
-			for i in plants:
-				plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
-			print(plant_type_table)
-			checkForOrders(custID, store_location, plants)
+        else:
+            for i in plants:
+                plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
+            print(plant_type_table)
+            checkForOrders(custID, store_location, plants)
 
 # -----------------------------GET PLANT BELOW PRICE RANGE FROM LOCATION----------------------------------
 def getAllPriceRanges(custID, store_location):
@@ -82,8 +79,7 @@ def getAllPriceRanges(custID, store_location):
 
 # ---------------------------------------GET ALL PLANTS FROM LOCATION--------------------------------------
 def getAllPlants(custID, store_location):
-	# print("Method definition: location:"+store_location)
-	plants = fetchAllPlants(store_location)
+  plants = fetchAllPlants(store_location)
 
 	plant_type_table = PrettyTable(['PlantID', 'Name', 'Price', 'Plant Age', 'Type', 'Description'])
 
@@ -99,22 +95,25 @@ def getAllPlants(custID, store_location):
 
 # -------------------------------------GET PLANTS FROM LOCATION-------------------------------------------
 def getPlantsFromLocation(custID, store_location):
-	print("Pick a category and we'l show you our best collection")
-	questions = [
-		inquirer.List('categry',
-					  message="Shop By Category",
-					  choices=['Plant Type', 'Price Range', 'Show all varities from the Location'],
-					  )
-	]
-	answers = inquirer.prompt(questions)
-	category = answers.get('categry')
+    print("Pick a category and we'l show you our best collection")
+    questions = [
+        inquirer.List('categry',
+                      message="Shop By Category",
+                      choices=['Plant Type', 'Price Range', 'Show all varities from the Location', 'Back'],
+                      )
+    ]
+    answers = inquirer.prompt(questions)
+    category = answers.get('categry')
 
-	if category == 'Plant Type':
-		getAllPlantTypes(custID, store_location)
-	elif category == 'Price Range':
-		getAllPriceRanges(custID, store_location)
-	elif category == 'Show all varities from the Location':
-		getAllPlants(custID, store_location)
+    if category == 'Plant Type':
+        getAllPlantTypes(custID, store_location)
+    elif category == 'Price Range':
+        getAllPriceRanges(custID, store_location)
+    elif category == 'Show all varities from the Location':
+        getAllPlants(custID, store_location)
+    elif category == 'Back':
+        searchPlants(custID)
+
 
 
 # ------------------------------------INITIAL STORE LIST AND PLANT TYPE LIST--------------------------------------
@@ -252,20 +251,19 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 	conn = getConnection()
 	cursor = conn.cursor()
 
-	store_id = fetchStoreId(store_location)
-	store_id = store_id[0]
+  store_id = fetchStoreId(store_location)
+  store_id = store_id[0]
+  order_status = "New"
 
-	sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s)"
-	cursor.execute(sql, (store_id, custID, order_type, payment_status, order_amount, address))
+  sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
+  cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
 	conn.commit()
 
 	order_id = cursor.lastrowid
-
 	for i in plants:
 		sql = "INSERT INTO order_item(order_id, quantity, plant_id, price) VALUES(%s, %s, %s, %s)"
 		cursor.execute(sql, (order_id, "1", i[0], i[2]))
 		conn.commit()
-	#print("order id is:",order_id)
 	cursor.close()
 	conn.close()
 
@@ -284,61 +282,61 @@ def searchPlants(custID):
 	if answers is not None:
 		getPlantsFromLocation(custID, store_location)
 
+
 def makeOrders(custID, store_location, plant_ids):
+    orders = fetchPlants(plant_ids)
+    order_amount = 0;
+    for i in orders:
+        order_amount = order_amount+i[2];
 
-	orders = fetchPlants(plant_ids)
-	order_amount = 0;
-	for i in orders:
-		order_amount = order_amount+i[2];
+    print("Great! Let's get you through the final steps of your order!")
+    print("You have ordered for", ", ".join(item[1] for item in orders), "and the total order amount is $"+str(order_amount)+"\n")
 
-	print("Great! Let's get you through the final steps of your order!")
-	print("You have ordered for", ", ".join(item[1] for item in orders), "and the total order amount is $"+str(order_amount)+"\n" )
-	#print("and the total order amount is", order_amount, "\n")
+    questions = [
+        inquirer.List('odr_typ',
+                      message="How do you want us to deliver?",
+                      choices=['Home Delivery', 'Store Pickup'],
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    order_type = answers.get('odr_typ')
 
-	questions = [
-		inquirer.List('odr_typ',
-					  message="How do you want us to deliver?",
-					  choices=['Home Delivery', 'Store Pickup'],
-					  ),
-	]
-	answers = inquirer.prompt(questions)
-	order_type = answers.get('odr_typ')
+    if order_type == "Home Delivery":
+        questions = [
+            inquirer.List('odr_adr',
+                          message="Would you like us to deliver the items to the registered address?",
+                          choices=['Yes', 'No'],
+                          ),
+        ]
+        answers = inquirer.prompt(questions)
+        order_address = answers.get('odr_adr')
 
-	if order_type == "Home Delivery":
-		questions = [
-			inquirer.List('odr_adr',
-						  message="Would you like us to deliver the items to the registered address?",
-						  choices=['Yes', 'No'],
-						  ),
-		]
-		answers = inquirer.prompt(questions)
-		order_address = answers.get('odr_adr')
+        if order_address == "Yes":
+            addr1 = fetchCustomerAddress(custID)
+            address = addr1[0]
 
-		if order_address == "Yes":
-			addr1 = fetchCustomerAddress(custID)
-			address = addr1[0]
+        elif order_address == "No":
+            questions = [
+                inquirer.Text('addr', message="Enter the Delivery Address:")
+            ]
+            answers = inquirer.prompt(questions)
+            address = answers.get('addr')
 
-		elif order_address == "No":
-			questions = [
-				inquirer.Text('addr', message="Enter the Delivery Address:")
-				]
-			answers = inquirer.prompt(questions)
-			address = answers.get('addr')
+        payment_status = "Paid"
+        saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, orders)
 
-		payment_status = "Paid"
-		saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, orders)
+        prGreen("Great! Your order is confirmed and you can expect it in 2-3 business days \n")
 
-		prGreen("Great! Your order is confirmed and you can expect it in 2-3 business days \n")
+    elif order_type == "Store Pickup":
 
-	elif order_type == "Store Pickup":
+        payment_status = "Cash on Delivery"
+        address = store_location+" store"
+        saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, orders)
 
-		payment_status = "Cash on Delivery"
-		address = store_location+" store"
-		saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, orders)
+        prGreen("Your order will be ready for pick-up in our "+store_location+" store in 4 hours.")
+        prGreen("Checkout our hot selling plants section! \n")
 
-		prGreen("Your order will be ready for pick-up in our "+store_location+" store in 4 hours.")
-		prGreen("Checkout our hot selling plants section! \n")
-
+        
 def checkForOrders(custID, store_location, plant):
 	questions = [
 		inquirer.List('order_req',
@@ -365,24 +363,22 @@ def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
 def prGreen(skk): print("\033[32m {}\033[00m" .format(skk))
 
 def choiceForOrders(custID, store_location, plants):
-	questions = [
-		inquirer.Checkbox('order_yes',
-						  message="Please go ahead and select your favourites",
-						  choices=plants
-						  )
-	]
-	answers = inquirer.prompt(questions)
-	orders = answers.get('order_yes')
+    questions = [
+        inquirer.Checkbox('order_yes',
+                          message="Select your favourites: <space> to select, and <space> again to toggle",
+                          choices=plants
+                          )
+    ]
+    answers = inquirer.prompt(questions)
+    orders = answers.get('order_yes')
 
-	if not orders:
-		prRed("Please select a plant to order!! \n")
-		choiceForOrders(custID, store_location, plants)
-	else:
-		order_size = len(orders)
-		if order_size > 5:
-			prRed("You can select only upto 5 plants!")
-			choiceForOrders(custID, store_location, plants)
+    if not orders:
+        prRed("Please select a plant to order!! \n")
+        orders = choiceForOrders(custID, store_location, plants)
+    else:
+        order_size = len(orders)
+        if order_size > 5:
+            prRed("You can select only upto 5 plants!")
+            orders = choiceForOrders(custID, store_location, plants)
 
-	return orders
-
-#searchPlants("1")
+    return orders

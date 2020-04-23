@@ -1,4 +1,7 @@
 import mysql.connector
+import hashlib
+import binascii
+import os
 
 def getConnection():	
 	conn = mysql.connector.connect(
@@ -51,8 +54,9 @@ def insert_lot(store_id):
 def insert_customer(cust_name, cust_username, cust_password, phone_no, address, email_id):
 	conn = getConnection()
 	cursor = conn.cursor()
+	hashed_password = hash_password(cust_password)
 	sql = "INSERT INTO customer(cust_name,cust_username, cust_password, phone_no, address, email_id) VALUES(%s,%s,%s, %s,%s,%s)"
-	data = (cust_name, cust_username, cust_password, phone_no, address, email_id)
+	data = (cust_name, cust_username, hashed_password, phone_no, address, email_id)
 	cursor.execute(sql, data)
 	conn.commit()
 	cursor.close()
@@ -81,8 +85,9 @@ def insert_order_item(order_id, plant_id, price, rating):
 def insert_employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id):
 	conn = getConnection()
 	cursor = conn.cursor()
+	hashed_password = hash_password(emp_password)
 	sql = "INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
-	data = (emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id)
+	data = (emp_name, emp_username, hashed_password, store_id, doj, phone_no, designation, supervisor_id)
 	cursor.execute(sql, data)
 	conn.commit()
 	cursor.close()
@@ -131,8 +136,9 @@ def update_store(store_id, number_of_lots, phone_no, address):
 def update_customer(cust_id, cust_name, cust_username, cust_password, phone_no, address, email_id):
 	conn = getConnection()
 	cursor = conn.cursor()
+	hashed_password = hash_password(cust_password)
 	sql = "UPDATE customer SET cust_name = %s, cust_username = %s, cust_password = %s, phone_no = %s, address = %s, email_id = %s WHERE cust_id = %s"
-	data = (cust_id, cust_name, cust_username, cust_password, phone_no, address, email_id)
+	data = (cust_name, cust_username, hashed_password, phone_no, address, email_id, cust_id)
 	cursor.execute(sql, data)
 	conn.commit()
 	cursor.close()
@@ -161,8 +167,9 @@ def update_order_item(item_id, order_id,  plant_id, price, rating,):
 def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id):
 	conn = getConnection()
 	cursor = conn.cursor()
+	hashed_password = hash_password(emp_password)
 	sql = "UPDATE employee SET emp_name = %s, emp_username = %s, emp_password = %s, store_id = %s, doj = %s, phone_no = %s, designation = %s, supervisor_id = %s WHERE emp_id = %s"
-	data = (emp_id, emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id)
+	data = (emp_name, emp_username, hashed_password, store_id, doj, phone_no, designation, supervisor_id, emp_id)
 	cursor.execute(sql, data)
 	conn.commit()
 	cursor.close()
@@ -581,6 +588,26 @@ def inCustomer(username):
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
+def hash_password(password):
+    """Hash a password for storing."""
+    salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
+    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), 
+                                salt, 100000)
+    pwdhash = binascii.hexlify(pwdhash)
+    return (salt + pwdhash).decode('ascii')
+ 
+def verify_password(stored_password, provided_password):
+    """Verify a stored password against one provided by user"""
+    salt = stored_password[:64]
+    stored_password = stored_password[64:]
+    pwdhash = hashlib.pbkdf2_hmac('sha512', 
+                                  provided_password.encode('utf-8'), 
+                                  salt.encode('ascii'), 
+                                  100000)
+    pwdhash = binascii.hexlify(pwdhash).decode('ascii')
+    return pwdhash == stored_password
+
+
 def startup():
 	#STORE
 	storeLots = 50
@@ -645,6 +672,7 @@ def startup():
 
 #---------------------------------------------------------------------------------TEST SCRIPTS--------------------------------------------------------
 def main():
+	# startup()
 	print("------------------STORE---------------------------")
 	print("Store Number of Lots is: " + str(getStore(1, "number_of_lots")))
 	print("Store Phone Number is: " + getStore(1, "phone_no"))

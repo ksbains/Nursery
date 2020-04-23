@@ -3,8 +3,6 @@ import inquirer
 from prettytable import PrettyTable
 import nursery_store
 
-
-
 def getCursor():	
 	conn = mysql.connector.connect(
 		host="localhost",

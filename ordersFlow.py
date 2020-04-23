@@ -13,7 +13,6 @@ def getConnection():
 	#cursor = conn.cursor()
 	return conn
 
-
 #---------------------------- Utility methods ---------------------------------------------
 
 #process order into json format
