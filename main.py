@@ -26,7 +26,10 @@ def mainMenu():
         ),]
         answer = inquirer.prompt(questions)
         if answer["userType"] == "Employee":
-                employeeStart()
+                #employeeStart()
+                empID=1
+                storeID=1
+                employeeManagerMainMenu(empID, storeID)
         else:
                 customerStart()
 
@@ -208,12 +211,10 @@ def deletePlantsMenu(empID, storeID):
                 ),]
     answers = inquirer.prompt(questions)
     answerList=list(answers.values())[0]
-    for i in range(len(answerList[0])):
+    for i in range(len(answerList)):
         plant_name = answerList[i]
         for id, name in plantDict.items():
-            print(id, name, plant_name)
             if name == plant_name:
-                print(id, name)
                 nursery.delete_plant(id)
                 break
     print(answerList, "deleted!")
@@ -221,7 +222,6 @@ def deletePlantsMenu(empID, storeID):
     
 
 def updatePlantsMenu(empID, storeID):
-    #plantList=[]
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
@@ -231,10 +231,6 @@ def updatePlantsMenu(empID, storeID):
             plantDict[row[0]]=row[1]
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
-    '''for i in range(len(plantList)):
-        plantNames.append(plantList[i][1])'''
-    #plantList.append("All the Above")
-    #plantList.append("None of the Above")
     questions = [
                 inquirer.Checkbox('updates',
                 message="What plants do you want to update?",
@@ -242,18 +238,17 @@ def updatePlantsMenu(empID, storeID):
                 ),]
     answers = inquirer.prompt(questions)
     answerList=list(answers.values())[0]
-    for i in range(len(answerList[0])):
+    print(answerList)
+    for i in range(len(answerList)):
         plant_name = answerList[i]
         for id, name in plantDict.items():
-            # print(id, name, plant_name)
             if name == plant_name:
                 questions = [
                             inquirer.Text('price', message="What's the plant price?"),
                             inquirer.Text('description', message="What's the plant description?"),
                             inquirer.Text('age', message="What's the plant age?"),]
                 answers = inquirer.prompt(questions)
-                answerList=list(answers.values())[0]
-                nursery.update_plant(id, name, price=answerList[0], description=answerList[1], age=answerList[2])
+                nursery.update_plant(id, name, price=answers['price'], description=answers['description'], age=answers['age'])
                 break
     print(answerList, "updated!")
     invManMenu(empID, storeID)

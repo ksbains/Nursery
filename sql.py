@@ -351,7 +351,7 @@ def startup():
 	EmployeeDOJ = "2000-01-25"
 	EmployeePhoneNo = "0123456789"
 	EmployeeDesignation = "Worker"
-	EmployeeSupervisor = 4
+	#EmployeeSupervisor = 4
 
 	insert_plant(plantName, plantPrice, plantDescription, plantAge)
 	insert_plant_type(plantTypeName, plantTypeDescription)
