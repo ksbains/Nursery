@@ -7,7 +7,7 @@ def getCursor():
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="***",
+		passwd="password",
 		database="nursery"
 	)
 	cursor = conn.cursor()
