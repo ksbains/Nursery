@@ -280,6 +280,21 @@ def getPlant(id, field):
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
+def getPlantName(name, field):
+	sql = "SELECT * FROM plant WHERE name = %s"
+	try:
+		cursor.execute(sql, (name,))
+		result = cursor.fetchone()
+		switch={
+		"plant_id": result[0],
+		"price": result[2],
+		"description": result[3],
+		"age": result[4]
+		}
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
 def getPlantType(type_id, field):
 	sql = "SELECT * FROM plant_type WHERE type_id = %s"
 	try:
@@ -619,6 +634,18 @@ def verify_password(stored_password, provided_password):
     return pwdhash == stored_password
 
 def startup():
+	#EMPLOYEE
+	EmployeeName = "Bee"
+	EmployeeUserName = "killabee"
+	EmployeePassword = "password"
+	EmployeeStoreId = 1
+	EmployeeDOJ = "2000-01-25"
+	EmployeePhoneNo = "0123456789"
+	EmployeeDesignation = "Worker"
+
+	
+	
+	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, None)
 	
 	#insert_manager(Name, username, password, storeID, DOJ, phone_no)
 	insert_manager("Lebron James","lbj", "password", 1, "2020-01-26", "9876543210")
