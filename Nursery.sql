@@ -13,6 +13,7 @@ create table store (
 create table lot(
    store_id integer NOT NULL,
    lot_id integer NOT NULL,
+   lot_capcity integer,
    primary key(store_id, lot_id),
    foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );
@@ -48,13 +49,13 @@ create table plant_locator (
 );
 
 create table customer (
-	cust_id integer not null AUTO_INCREMENT,
+    cust_id integer not null AUTO_INCREMENT,
     cust_name varchar(20) not null,
     cust_username varchar(50) not null,
     cust_password varchar(500) not null,
     phone_no char(10),
     address varchar(50),
-    email_id varchar(20),
+    email_id varchar(35),
     primary key(cust_id),
     unique(cust_username)
 );
@@ -89,9 +90,9 @@ create table order_item (
 );
 
 create table employee (
-	emp_id integer not null AUTO_INCREMENT,
+    emp_id integer not null AUTO_INCREMENT,
     emp_name varchar(20) not null,
-    emp_username varchar(50) not null, 
+    emp_username varchar(50) not null,
     emp_password varchar(500) not null,
     store_id integer not null,
     doj date,
