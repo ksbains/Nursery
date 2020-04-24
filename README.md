@@ -2,7 +2,7 @@
 
 ### Required Installs
 pip install pyfiglet<br>
-pip install prettytable 
-pip install hashlib
-pip install binascii
-pip install os
+pip install prettytable<br>
+pip install hashlib<br>
+pip install binascii<br>
+pip install os<br>
