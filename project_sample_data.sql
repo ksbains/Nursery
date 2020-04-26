@@ -16,14 +16,6 @@ value (6, 25, '5555566666', 'Monterey');
 insert into store (store_id, number_of_lots, phone_no, address)
 value (7, 40, '6666644444', 'Santa Clara');
 
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("Lebron James","LBJ", "bronny", 1, "2020-01-26", "9876543210", "Manager");
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("Kobe","kobe", "bronny", 2, "2020-01-26", "9876543210", "Manager");
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("james harden","jh", "bronny", 3, "2020-01-26", "9876543210", "Manager");
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("steph curry","sc", "bronny", 4, "2020-01-26", "9876543210", "Manager");
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("klay thompson","kt", "bronny", 5, "2020-01-26", "9876543210", "Manager");
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("Draymond Green","dg", "bronny", 6, "2020-01-26", "9876543210", "Manager");
-INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES("Javale Mcgee","jm", "bronny", 7, "2020-01-26", "9876543210", "Manager");
-
 insert into lot (lot_id, store_id) value (11, 1);
 insert into lot (lot_id, store_id) value (12, 1);
 insert into lot (lot_id, store_id) value (13, 1);
