@@ -3,15 +3,14 @@ import inquirer
 from prettytable import PrettyTable
 import nursery_store
 
-def getCursor():	
+def getConnection():	
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="***",
+		passwd="password",
 		database="nursery"
 	)
-	cursor = conn.cursor()
-	return cursor
+	return conn
 
 #--------------------------------------- Utility methods ----------------------------------
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
@@ -28,10 +27,12 @@ def getPlantsWithRating():
  		  HAVING avg(i.rating) IS NOT NULL
  		  ORDER BY customer_rating DESC"""
 	try:
-		cursor = getCursor()
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		plants = cursor.fetchall()
 		cursor.close()
+		conn.close()
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by rating!")
@@ -46,10 +47,12 @@ def getPlantsOrderMost():
 		  GROUP BY p.plant_id, p.name, t.type_name
 		  ORDER BY ordered_count DESC"""
 	try:
-		cursor = getCursor()
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql)
 		plants = cursor.fetchall()
 		cursor.close()
+		conn.close()
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by most ordered!")
@@ -65,10 +68,12 @@ def getTopPlantGivenType(plantType):
 		  GROUP BY p.plant_id, p.name, t.type_name
 		  ORDER BY ordered_count DESC"""
 	try:
-		cursor = getCursor()
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (plantType,))
 		plants = cursor.fetchall()
 		cursor.close()
+		conn.close()
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by type!")
@@ -87,10 +92,12 @@ def getTopPlantGivenStore(store):
 		  GROUP BY p.plant_id, p.name, p.price, t.type_name
 		  ORDER BY ordered_count DESC"""
 	try:
-		cursor = getCursor()
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (store,))
 		result = cursor.fetchall()
 		cursor.close()
+		conn.close()
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by store!")
@@ -104,10 +111,12 @@ def getStoresForPlant(plantId):
 		  JOIN store s ON s.store_id = l.store_id
 		  WHERE p.plant_id = %s"""
 	try:
-
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (plantId,))
 		result = cursor.fetchall()
 		cursor.close()
+		conn.close()
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error in fetching stores for given plant!")
@@ -132,22 +141,27 @@ def showTrendingMainMenu(custID):
 	
 	if selectedAns == 'Rating':
 		plants  = getPlantsWithRating()
-		plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Plant Type', 'Price', 'Average Rating'])
-		for x in plants:
-			plant_table.add_row([x[0], x[1], x[2], x[3], x[4]])
-		print(plant_table)
-		print("\n")
-		prYellow("You can place orders by browsing plants from Stores in main menu")
+		if len(plants) != 0:
+			plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Plant Type', 'Price', 'Average Rating'])
+			for x in plants:
+				plant_table.add_row([x[0], x[1], x[2], x[3], x[4]])
+			print(plant_table)			
+		else:
+			prYellow("Plants haven't been rated yet! Be the first to rate!")
+			prYellow("You can rate the items from MyOrders")
+		prYellow("You can place orders by browsing plants from Stores in main menu\n")
 		print("\n")
 		showTrendingMainMenu(custID)
 	elif selectedAns == 'Most ordered':
 		plants  = getPlantsOrderMost()
-		plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Plant Type', 'Price', 'Number of customers who bought', 'Average Rating'])
-		for x in plants:
-			plant_table.add_row([x[0], x[1], x[2], x[3], x[4], x[5]])
-		print(plant_table)
-		print("\n")
-		prYellow("You can place orders by browsing plants from Stores in main menu")
+		if len(plants) != 0:
+			plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Plant Type', 'Price', 'Number of customers who bought', 'Average Rating'])
+			for x in plants:
+				plant_table.add_row([x[0], x[1], x[2], x[3], x[4], x[5]])
+			print(plant_table)
+		else:
+			prYellow("Plants haven't been ordered yet! Be the first to order!")
+		prYellow("You can place orders by browsing plants from Stores in main menu\n")
 		print("\n")
 		showTrendingMainMenu(custID)
 	elif selectedAns == 'Type':
@@ -161,12 +175,14 @@ def showTrendingMainMenu(custID):
 		answer = inquirer.prompt(question)
 		plantType = answer.get('plantType')
 		plants = getTopPlantGivenType(plantType)
-		plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Price', 'Number of customers who bought', 'Average Rating'])
-		for x in plants:
-			plant_table.add_row([x[0], x[1], x[2], x[3], x[4]])
-		print(plant_table)
-		print("\n")
-		prYellow("You can place orders by browsing plants from Stores in main menu")
+		if len(plants) != 0:
+			plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Price', 'Number of customers who bought', 'Average Rating'])
+			for x in plants:
+				plant_table.add_row([x[0], x[1], x[2], x[3], x[4]])
+			print(plant_table)
+		else:
+			prYellow("Plants haven't been ordered yet! Be the first to order!")
+		prYellow("You can place orders by browsing plants from Stores in main menu\n")
 		print("\n")
 		showTrendingMainMenu(custID)
 	elif selectedAns == 'Store':
@@ -181,10 +197,14 @@ def showTrendingMainMenu(custID):
 		store = answer.get('stores')
 		storeId = nursery_store.fetchStoreId(store)
 		plants = getTopPlantGivenStore(store)
-		plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Plant Type', 'Price', 'Number of customers who bought', 'Average Rating'])
-		for x in plants:
-			plant_table.add_row([x[0], x[1], x[3], x[2], x[4], x[5]])
-		print(plant_table)
-		nursery_store.checkForOrders(custID, store, plants)
+		if len(plants) != 0:
+			plant_table = PrettyTable(['Plant Id', 'Plant Name', 'Plant Type', 'Price', 'Number of customers who bought', 'Average Rating'])
+			for x in plants:
+				plant_table.add_row([x[0], x[1], x[3], x[2], x[4], x[5]])
+			print(plant_table)
+			nursery_store.checkForOrders(custID, store, plants)
+		else:
+			prYellow("Plants haven't been ordered/rated yet! Be the first to order!")
+			prYellow("You can place orders by browsing plants from Stores in main menu\n")
 
 

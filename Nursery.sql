@@ -1,3 +1,4 @@
+
 drop database if exists nursery;
 create database nursery;
 use nursery;
@@ -13,6 +14,7 @@ create table store (
 create table lot(
    store_id integer NOT NULL,
    lot_id integer NOT NULL,
+   lot_capcity integer,
    primary key(store_id, lot_id),
    foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );
@@ -49,14 +51,14 @@ create table plant_locator (
 
 create table customer (
 	cust_id integer not null AUTO_INCREMENT,
-    cust_name varchar(20) not null,
-    cust_username varchar(50) not null,
-    cust_password varchar(500) not null,
-    phone_no char(10),
-    address varchar(50),
-    email_id varchar(20),
-    primary key(cust_id),
-    unique(cust_username)
+  cust_name varchar(200) not null,
+  cust_username varchar(100) not null,
+  cust_password varchar(500) not null,
+  phone_no char(10),
+  address varchar(200),
+  email_id varchar(200),
+  primary key(cust_id),
+  unique(cust_username)
 );
 
 create table orders (
@@ -89,17 +91,17 @@ create table order_item (
 );
 
 create table employee (
-	emp_id integer not null AUTO_INCREMENT,
-    emp_name varchar(20) not null,
-    emp_username varchar(50) not null, 
-    emp_password varchar(500) not null,
-    store_id integer not null,
-    doj date,
-    phone_no char(10),
-    designation varchar(20),
-    supervisor_id integer,
-    primary key(emp_id),
-    unique(emp_name),
-    unique(emp_username),
-    foreign key(store_id) references store(store_id) ON DELETE CASCADE
+  emp_id integer not null AUTO_INCREMENT,
+  emp_name varchar(200) not null,
+  emp_username varchar(100) not null, 
+  emp_password varchar(500) not null,
+  store_id integer not null,
+  doj date,
+  phone_no char(10),
+  designation varchar(20),
+  supervisor_id integer,
+  primary key(emp_id),
+  unique(emp_name),
+  unique(emp_username),
+  foreign key(store_id) references store(store_id) ON DELETE CASCADE
 );

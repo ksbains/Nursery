@@ -1,3 +1,4 @@
+
 import mysql.connector
 import hashlib
 import binascii
@@ -7,18 +8,17 @@ def getConnection():
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="***",
+		passwd="password",
 		database="nursery"
 	)
-	#cursor = conn.cursor()
 	return conn
 	
 #-----------------------------------------------INSERT into TABLES------------------------------------------------------------
-def insert_plant(name, price, description, age, lot_id):
+def insert_plant(name, price, description, age):
 	conn = getConnection()
 	cursor = conn.cursor()
-	sql = "INSERT INTO plant(name, price, description, age, lot_id) VALUES(%s,%s,%s,%s, %s)"
-	cursor.execute(sql, (name, price, description, age, lot_id))
+	sql = "INSERT INTO plant(name, price, description, age) VALUES(%s,%s,%s,%s)"
+	cursor.execute(sql, (name, price, description, age))
 	conn.commit()
 	cursor.close()
 	conn.close()
@@ -93,11 +93,23 @@ def insert_employee(emp_name, emp_username, emp_password, store_id, doj, phone_n
 	cursor.close()
 	conn.close()
 
+def insert_manager(emp_name, emp_username, emp_password, store_id, doj, phone_no):
+	conn = getConnection()
+	cursor = conn.cursor()
+	hashed_password = hash_password(emp_password)
+	designation = "Manager"
+	sql = "INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation) VALUES(%s,%s,%s,%s,%s,%s,%s)"
+	data = (emp_name, emp_username, hashed_password, store_id, doj, phone_no, designation)
+	cursor.execute(sql, data)
+	conn.commit()
+	cursor.close()
+	conn.close()
+
 #---------------------------------------------------------UPDATE Tables---------------------------------------------------------------------------
 def update_plant(id, name, price, description, age):
 	conn = getConnection()
 	cursor = conn.cursor()
-	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE id = %s"
+	sql = "UPDATE plant SET name = %s, price = %s, description = %s, age = %s WHERE plant_id = %s"
 	cursor.execute(sql, (name, price, description, age, id))
 	conn.commit()
 	cursor.close()
@@ -179,7 +191,7 @@ def update_employee(emp_id, emp_name, emp_username, emp_password, store_id, doj,
 def delete_plant(id):
 	conn = getConnection()
 	cursor = conn.cursor()
-	sql = "DELETE FROM plant WHERE id = %s"
+	sql = "DELETE FROM plant WHERE plant_id = %s"
 	cursor.execute(sql, (id,))
 	conn.commit()
 	cursor.close()
@@ -251,7 +263,7 @@ def delete_employee(emp_id):
 
 #---------------------------------------SELECT from Tables---------------------------------------------------
 def getPlant(id, field):
-	sql = "SELECT * FROM plant WHERE id = %s"
+	sql = "SELECT * FROM plant WHERE plant_id = %s"
 	try:
 		conn = getConnection()
 		cursor = conn.cursor()
@@ -265,6 +277,21 @@ def getPlant(id, field):
 		}
 		cursor.close()
 		conn.close()
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+def getPlantName(name, field):
+	sql = "SELECT * FROM plant WHERE name = %s"
+	try:
+		cursor.execute(sql, (name,))
+		result = cursor.fetchone()
+		switch={
+		"plant_id": result[0],
+		"price": result[2],
+		"description": result[3],
+		"age": result[4]
+		}
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
@@ -425,6 +452,56 @@ def getEmployee(emp_id, field):
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
+# Jasper's changes
+def getEmployees(storeID):
+	sql = "SELECT * FROM employee WHERE store_id = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (storeID,))
+		result = cursor.fetchall()
+		cursor.close()
+		conn.close()
+		return result
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+
+# Jasper's changes
+def update_supID(emp_id, supervisor_id):
+	sql = "UPDATE employee SET supervisor_id = %s, designation = %s WHERE emp_id = %s"
+	data = (supervisor_id,"Manager",emp_id)
+	conn = getConnection()
+	cursor = conn.cursor()
+	cursor.execute(sql, data)
+	conn.commit()
+	cursor.close()
+	conn.close()
+
+def getEmployeeLogin(username, field):
+	sql = "SELECT * FROM employee WHERE emp_username = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (username,))
+		result = cursor.fetchone()
+		switch={
+		"emp_name": result[1],
+		"emp_username": result[2],
+		"emp_password": result[3],
+		"store_id": result[4],
+		"doj": result[5],
+		"phone_no": result[6],
+		"designation": result[7],
+		"supervisor_id": result[8]
+		}
+		cursor.close()
+		conn.close()
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
+
 def getEmployeeLogin(username, field):
 	sql = "SELECT * FROM employee WHERE emp_username = %s"
 	try:
@@ -519,6 +596,7 @@ def customers():
 		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+		
 
 def orders():
 	sql = "SELECT * FROM orders"
@@ -607,49 +685,7 @@ def verify_password(stored_password, provided_password):
     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash == stored_password
 
-
 def startup():
-	#STORE
-	storeLots = 50
-	storePhoneNo = "0123456789"
-	storeAddress = "2341 Redneck Dr."
-
-	#LOT
-	lotStoreId = 1
-
-	#PLANTS
-	plantName = "queenPalm"
-	plantPrice = 25.50
-	plantDescription = "YAASSS QUEEEN!!"
-	plantAge = 21
-	plantLotId = 1
-
-	#PLANT TYPES
-	plantTypeName = "tree"
-	plantTypeDescription = "tall plant"
-
-	#CUSTOMER
-	customerName = "jeff"
-	customerUserName = "jefe"
-	customerPassword = "myNameJeff"
-	customerPhoneNo = "0123456789"
-	customerAddress = "1234 Robin Wy."
-	customerEmail = "jeff@gmail.com"
-	
-	#ORDERS
-	OrderStoreId = 1
-	OrderCustId = 1
-	OrderType = "single"
-	OrderPaymentStatus = "Paid"
-	OrderPrice = 120.99
-	OrderDeliveryAddress = "5738 Applegate Ave."
-
-	#ORDER_ITEM
-	OrderID = 1
-	OrderPlantID = 1
-	OrderItemPrice = 123.67
-	OrderRating = 4.5
-
 	#EMPLOYEE
 	EmployeeName = "Bee"
 	EmployeeUserName = "killabee"
@@ -658,169 +694,16 @@ def startup():
 	EmployeeDOJ = "2000-01-25"
 	EmployeePhoneNo = "0123456789"
 	EmployeeDesignation = "Worker"
-	EmployeeSupervisor = 4
 
 	
-	insert_store(storeLots, storePhoneNo, storeAddress)
-	insert_lot(lotStoreId)
-	insert_plant(plantName, plantPrice, plantDescription, plantAge, plantLotId)
-	insert_plant_type(plantTypeName, plantTypeDescription)
-	insert_customer(customerName, customerUserName, customerPassword, customerPhoneNo, customerAddress, customerEmail)
-	insert_orders(OrderStoreId, OrderCustId, OrderType, OrderPaymentStatus, OrderPrice, OrderDeliveryAddress)
-	insert_order_item(OrderID, OrderPlantID, OrderItemPrice, OrderRating)
-	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, EmployeeSupervisor)
-
-#---------------------------------------------------------------------------------TEST SCRIPTS--------------------------------------------------------
-def main():
-	# startup()
-	print("------------------STORE---------------------------")
-	print("Store Number of Lots is: " + str(getStore(1, "number_of_lots")))
-	print("Store Phone Number is: " + getStore(1, "phone_no"))
-	print("Store Address is: " + getStore(1, "address"))
-
-	print("-----------------------LOT---------------------------")
-	print("Lot StoreId is: " + str(getLot(1, "store_id")))
 	
-	print("-----------------PLANT TABLE-----------------")
-	print("Plant name is: " + getPlant(1, "name"))
-	print("Plant price is: " + str(getPlant(1, "price")))
-	print("Plant description is: " + getPlant(1, "description"))
-	print("Plant age is: " + str(getPlant(1, "age")))
+	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, None)
 	
-	print("------------------PLANT TYPE------------------")
-	print("PlantType name is: " + getPlantType(1, "type_name"))
-	print("PlantType description is: " + getPlantType(1, "description"))
-	
-	print("------------------CUSTOMER---------------------------")
-	print("Customer Name is: " + getCustomer(1, "cust_name"))
-	print("Customer UserName is: " + getCustomer(1, "cust_username"))
-	print("Customer Password is: " + getCustomer(1, "cust_password"))
-	print("Customer Phone Number is: " + getCustomer(1, "phone_no"))
-	print("Customer Address is: " + getCustomer(1, "address"))
-	print("Customer Email is: " + getCustomer(1, "email_id"))
-	
-	print("-------------------------ORDERS-------------------------")
-	print("Orders StoreId is: " + str(getOrders(1, "store_id")))
-	print("Orders CustomerId is: " + str(getOrders(1, "cust_id")))
-	print("Orders Order Type is: " + getOrders(1, "order_type"))
-	print("Orders Payment Status is: " + getOrders(1, "payment_status"))
-	print("Orders Price is: " + str(getOrders(1, "price")))
-	print("Orders Delivery Address is: " + getOrders(1, "delivery_address"))
-	
-	print("-------------------------ORDER ITEM-------------------------")
-	print("OrderItem OrderId is: " + str(getOrderItem(1, "order_id")))
-	print("OrderItem PlantId is: " + str(getOrderItem(1, "plant_id")))
-	print("OrderItem Price is: " + str(getOrderItem(1, "price")))
-	print("OrderItem Rating is: " + str(getOrderItem(1, "rating"))	)
-	
-	print("-------------------------EMPLOYEE-------------------------")	
-	print("Employee Name is: " + getEmployee(1, "emp_name"))
-	print("Employee UserName is: " + getEmployee(1, "emp_username"))
-	print("Employee Password is: " + getEmployee(1, "emp_password"))
-	print("Employee Store Id is: " + str(getEmployee(1, "store_id")))
-	print("Employee DOJ is: " + str(getEmployee(1, "doj")))
-	print("Employee Phone Number is: " + getEmployee(1, "phone_no"))
-	print("Employee Designation is: " + getEmployee(1, "designation"))
-	print("Employee Supervisor Id is: " + str(getEmployee(1, "supervisor_id")))
-
-	# -----------------------------------------------UPDATE--------------------------------------------------------
-	
-	update_store(1, 49, "9876543210", "3241 Bobcat St.")
-	update_lot(1, 1)
-	update_plant(1, "King Plam", 47, "Royal Palm", 24)
-	update_plant_type(1, "StillTree",  "TallTree")
-
-	update_customer(1, "Bob", "Bobdat", "pass", "9876543210", "4321 Batman Cv", "Bob@yahoo.com")
-	update_orders(1,1,1, "double", "Payment Due", 666.21, "57312 treeapple Wy.")
-	update_order_item(1,1,1, 432, 6.7)
-	update_employee(1, "Lebron James","KingLBJ", "bronny", 1, "2020-01-26", "9876543210", "KingJames", 7)
-
-	#------------------------------------AFTER UPDATE----------------------------------------------------
-
-	print("------------------------------------AFTER UPDATE----------------------------------------------------")
-	
-	print("------------------STORE---------------------------")
-	print("Store Number of Lots is: " + str(getStore(1, "number_of_lots")))
-	print("Store Phone Number is: " + getStore(1, "phone_no"))
-	print("Store Address is: " + getStore(1, "address"))
-
-	print("-----------------------LOT---------------------------")
-	print("Lot StoreId is: " + str(getLot(1, "store_id")))
-
-	print("-----------------PLANT TABLE-----------------")
-	print("Plant name is: " + getPlant(1, "name"))
-	print("Plant price is: " + str(getPlant(1, "price")))
-	print("Plant description is: " + getPlant(1, "description"))
-	print("Plant age is: " + str(getPlant(1, "age")))
-
-	print("------------------PLANT TYPE------------------")
-	print("PlantType name is: " + getPlantType(1, "type_name"))
-	print("PlantType description is: " + getPlantType(1, "description"))
-
-	print("------------------CUSTOMER---------------------------")
-	print("Customer Name is: " + getCustomer(1, "cust_name"))
-	print("Customer UserName is: " + getCustomer(1, "cust_username"))
-	print("Customer Password is: " + getCustomer(1, "cust_password"))
-	print("Customer Phone Number is: " + getCustomer(1, "phone_no"))
-	print("Customer Address is: " + getCustomer(1, "address"))
-	print("Customer Email is: " + getCustomer(1, "email_id"))
-
-	print("-------------------------ORDERS-------------------------")
-	print("Orders StoreId is: " + str(getOrders(1, "store_id")))
-	print("Orders CustomerId is: " + str(getOrders(1, "cust_id")))
-	print("Orders Order Type is: " + getOrders(1, "order_type"))
-	print("Orders Payment Status is: " + getOrders(1, "payment_status"))
-	print("Orders Price is: " + str(getOrders(1, "price")))
-	print("Orders Delivery Address is: " + getOrders(1, "delivery_address"))
-
-	print("-------------------------ORDER ITEM-------------------------")
-	print("OrderItem OrderId is: " + str(getOrderItem(1, "order_id")))
-	print("OrderItem PlantId is: " + str(getOrderItem(1, "plant_id")))
-	print("OrderItem Price is: " + str(getOrderItem(1, "price")))
-	print("OrderItem Rating is: " + str(getOrderItem(1, "rating"))	)
-
-	print("-------------------------EMPLOYEE-------------------------")	
-	print("Employee Name is: " + getEmployee(1, "emp_name"))
-	print("Employee UserName is: " + getEmployee(1, "emp_username"))
-	print("Employee Password is: " + getEmployee(1, "emp_password"))
-	print("Employee Store Id is: " + str(getEmployee(1, "store_id")))
-	print("Employee DOJ is: " + str(getEmployee(1, "doj")))
-	print("Employee Phone Number is: " + getEmployee(1, "phone_no"))
-	print("Employee Designation is: " + getEmployee(1, "designation"))
-	print("Employee Supervisor Id is: " + str(getEmployee(1, "supervisor_id")))
-
-	delete_plant(1)
-	delete_plant_type(1)
-	delete_store(1)
-	delete_store(1)
-	delete_customer(1)
-	delete_orders(1)
-	delete_order_item(1)
-	delete_employee(1)
-
-
-	print("------------------------------------AFTER DELETE----------------------------------------------------")
-	
-	print("------------------STORE---------------------------")
-	stores()
-
-	print("------------------LOT---------------------------")
-	lots()
-
-	print("-----------------PLANT TABLE-----------------")
-	plants()
-	
-	print("------------------PLANT TYPE------------------")
-	plantTypes()
-
-	print("------------------CUSTOMER---------------------------")
-	customers()
-	
-	print("-------------------------ORDERS-------------------------")
-	orders()
-	
-	print("-------------------------ORDER ITEM-------------------------")
-	orderItems()
-	
-	print("-------------------------EMPLOYEE-------------------------")	
-	employees()
+	#insert_manager(Name, username, password, storeID, DOJ, phone_no)
+	insert_manager("Lebron James","lbj", "password", 1, "2020-01-26", "9876543210")
+	insert_manager("Kobe","kobe", "password", 2, "2020-01-26", "9876543210")
+	insert_manager("James Harden","jh", "password", 3, "2020-01-26", "9876543210") 
+	insert_manager("Wardell Curry","sc", "password", 4, "2020-01-26", "9876543210")
+	insert_manager("Klay Thompson","kt", "password", 5, "2020-01-26", "9876543210")
+	insert_manager("Draymond Green","dg", "password", 6, "2020-01-26", "9876543210")
+	insert_manager("Javale Mcgee","jm", "password", 7, "2020-01-26", "9876543210")

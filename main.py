@@ -1,9 +1,19 @@
+import mysql.connector
 import nursery
 import inquirer
 import ordersFlow
 import trendingFlow
 import nursery_store
 from pyfiglet import figlet_format
+
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="password",
+    database="nursery"
+)
+
+cursor = mydb.cursor()
 
 print(figlet_format('Green Ivy', font='slant'))
 print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
@@ -26,7 +36,7 @@ def employeeStart():
         # ask Employee if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType',
-                message="Sign in, or create a new account and join today!",
+                message="Hello Employee, sign in or create a new account and join today!",
                 choices=['Sign In', 'Sign Up', 'Back'],
         ),]
         answer = inquirer.prompt(questions)
@@ -68,13 +78,15 @@ def employeeManagerMainMenu(empID, storeID):
         questions = [inquirer.List(
                 'employeeMain',
                 message="Select an option:",
-                choices=['Inventory', 'Manage Employees', 'Logout'],
+                choices=['Inventory', 'Manage Employees','Orders', 'Logout'],
         ),]
         answer = inquirer.prompt(questions)
         if answer["employeeMain"] == "Inventory":
                 inventory(empID, storeID)
         elif answer["employeeMain"] == "Manage Employees":
                 manageEmp(empID, storeID)
+        elif answer["employeeMain"] == "Orders":
+                orders(empID, storeID)
         elif answer["employeeMain"] == "Logout":
                 employeeStart()
         else:
@@ -112,20 +124,248 @@ def employeeSignUp():
         employeePhone_no = answers['phone_no']
         employeeStart = "2020-04-27"
         employeeJob = "Sales Associate"
-        employeeStoreID = 1
-        employeeManager = 4
+
+        question1 = [inquirer.List(
+                'employeeLocation',
+                message="Which location do you work at?",
+                choices=['San Jose', 'Alameda', 'Fresno', 'Napa', 'Oakland', 'Monterey', 'Santa Clara'],
+        ),]
+        answer1 = inquirer.prompt(question1)
+        
+        switch={
+        'San Jose': 1, 
+        'Alameda': 2, 
+        'Fresno': 3, 
+        'Napa': 4, 
+        'Oakland': 5, 
+        'Monterey': 6, 
+        'Santa Clara': 7
+        }
+
+        employeeInfo = switch.get(answer1["employeeLocation"], 1)
+        employeeStoreID = employeeInfo
+        employeeManager = employeeInfo
 
         # insert_employee(store_id, supervisor_id)
         nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
 
         print("You have signed up! go ahead and sign in now!")
         employeeSignIn()
+    
+def employeeManagerMainMenu(empID, storeID):
+    questions = [inquirer.List(
+                'userType', 
+                message="What would you like to do?",
+                choices=['Employee Management', 'Inventory Management','Orders', 'Back'],),]
+    answer = inquirer.prompt(questions)
+    if answer["userType"] == "Employee Management":
+        empManMenu(empID, storeID)
+    elif answer["userType"] == "Inventory Management":
+        invManMenu(empID, storeID)
+    elif answer["userType"] == "Orders":
+                orders(empID, storeID)
+    else:
+        employeeStart()
+
+def empManMenu(empID, storeID):
+    questions = [inquirer.List(
+                'userType', 
+                message="What would you like to do?",
+                choices=['Hire Employee', 'Fire Employee', 'Promote Employee', 'Back'],),]
+    answer = inquirer.prompt(questions)
+    if answer["userType"] == "Hire Employee":
+        hireEmployee(empID, storeID)
+    elif answer["userType"] == "Fire Employee":
+        fireEmployee(empID, storeID)
+    elif answer["userType"] == "Promote Employee":
+        promoteEmployee(empID, storeID)
+    else:
+        employeeManagerMainMenu(empID, storeID)
+
+
+# Jasper's changes
+def hireEmployee(empID, storeID):
+    # enter new hire information
+    questions = [
+      inquirer.Text('name',       message="Enter employee name"),
+      inquirer.Text('username',   message="Enter employee username"),
+      inquirer.Text('password',   message="Enter employee password"),
+      inquirer.Text('phone_no',   message="Enter employee phone number"),
+      inquirer.Text('start_date', message="Enter employee start date"),
+      inquirer.List('job_title',  message='Select employee job title',
+                                  choices=['Manager', 'Sales Associate'],
+                                  default='Sales Associate')
+    ]
+    answers = inquirer.prompt(questions)
+
+    employeeName     = answers['name']
+    employeeUsername = answers['username']
+    employeePassword = answers['password']
+    employeePhone_no = answers['phone_no']
+    employeeStart    = answers['start_date']
+    employeeJob      = answers['job_title']
+    employeeStoreID  = storeID
+    employeeManager  = empID
+
+    # insert_employee(store_id, supervisor_id)
+    nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
+    empManMenu(empID, storeID)
+
+# Jasper's changes
+def fireEmployee(empID, storeID):
+
+    employees = nursery.getEmployees(storeID)
+    displayEmployees(employees)
+
+    questions = [
+      inquirer.Text('emp_id', message="Enter ID of employee to be fired"),
+    ]
+    answers = inquirer.prompt(questions)
+    employeeID = answers['emp_id']
+
+    if employeeID == empID:
+        print("Invalid Operation: Cannot fire selected employee")
+    else:
+        nursery.delete_employee(employeeID)
+
+    empManMenu(empID, storeID)
+
+# Jasper's changes
+def promoteEmployee(empID, storeID):
+
+    employees = nursery.getEmployees(storeID)
+    displayEmployees(employees)
+    questions = [
+      inquirer.Text('emp_id', message="Enter ID of employee to promote"),
+    ]
+    answers = inquirer.prompt(questions)
+    employeeID = answers['emp_id']
+
+    if employeeID == empID:
+        print("Invalid Operation: Cannot promote selected employee")
+    else:
+        nursery.update_supID(employeeID, None)
+
+    empManMenu(empID, storeID)
+
+# Jasper's changes
+def displayEmployees(employees):
+    for employee in employees:
+        print(employee[0], employee[1])
+    print("")
+
+
+def invManMenu(empID, storeID):
+    questions = [inquirer.List(
+                'userType', 
+                message="What would you like to do?",
+                choices=['Add Plants', 'Delete Plants', 'Update Plants', 'Show Plants', 'Back'],),]
+    answer = inquirer.prompt(questions)
+    if answer["userType"] == "Add Plants":
+        addPlantsMenu(empID, storeID)
+    elif answer["userType"] == "Delete Plants":
+        deletePlantsMenu(empID, storeID)
+    elif answer["userType"] == "Update Plants":
+        updatePlantsMenu(empID, storeID)
+    elif answer["userType"] == "Show Plants":
+        showPlantsMenu(empID, storeID)
+    else:
+        employeeManagerMainMenu(empID, storeID)
+
+def addPlantsMenu(empID, storeID):
+    questions = [
+        inquirer.Text('name', message="What's the plant name?"),
+        inquirer.Text('price', message="What's the plant price?"),
+        inquirer.Text('description', message="What's the plant description?"),
+        inquirer.Text('age', message="What's the plant age?"),]
+    answers = inquirer.prompt(questions)
+    nursery.insert_plant(answers["name"], answers["price"], answers["description"], answers["age"])
+    #getplantName(name)
+    #insert into plant locator
+    #nursery.insert_plant_locator(store_id, lot_id, plant_id)
+    print(answers["name"], "added!")
+    invManMenu(empID, storeID)
+
+def deletePlantsMenu(empID, storeID):
+    plantDict={}
+    sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
+    try:
+        cursor.execute(sql) #, storeID)
+        result = cursor.fetchall()
+        for row in result:
+            plantDict[row[0]]=row[1]
+    except mysql.connector.Error as err:
+        print("MYSQL ERROR: {}".format(err))
+    #plantList=list(plantDict.values())
+    #plantList.append("All the Above")
+    #plantList.append("None of the Above")
+    questions = [
+                inquirer.Checkbox('deletions',
+                message="What plants do you want to delete?",
+                choices=plantDict.values(),
+                ),]
+    answers = inquirer.prompt(questions)
+    answerList=list(answers.values())[0]
+    for i in range(len(answerList)):
+        plant_name = answerList[i]
+        for id, name in plantDict.items():
+            if name == plant_name:
+                nursery.delete_plant(id)
+                break
+    print(answerList, "deleted!")
+    invManMenu(empID, storeID)
+    
+
+def updatePlantsMenu(empID, storeID):
+    plantDict={}
+    sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
+    try:
+        cursor.execute(sql) #, storeID)
+        result = cursor.fetchall()
+        for row in result:
+            plantDict[row[0]]=row[1]
+    except mysql.connector.Error as err:
+        print("MYSQL ERROR: {}".format(err))
+    questions = [
+                inquirer.Checkbox('updates',
+                message="What plants do you want to update?",
+                choices=plantDict.values(),
+                ),]
+    answers = inquirer.prompt(questions)
+    answerList=list(answers.values())[0]
+    print(answerList)
+    for i in range(len(answerList)):
+        plant_name = answerList[i]
+        for id, name in plantDict.items():
+            if name == plant_name:
+                questions = [
+                            inquirer.Text('price', message="What's the plant price?"),
+                            inquirer.Text('description', message="What's the plant description?"),
+                            inquirer.Text('age', message="What's the plant age?"),]
+                answers = inquirer.prompt(questions)
+                nursery.update_plant(id, name, price=answers['price'], description=answers['description'], age=answers['age'])
+                break
+    print(answerList, "updated!")
+    invManMenu(empID, storeID)
+
+def showPlantsMenu(empID, storeID):
+    # sql = "SELECT p.name, p.price, p.description, p.age FROM plant p"#, plants_locator l WHERE l.store_id = %s"
+    # try:
+    #     cursor.execute(sql) #, storeID)
+    #     result = cursor.fetchall()
+    #     for row in result:
+    #         print(row)
+    # except mysql.connector.Error as err:
+    #     print("MYSQL ERROR: {}".format(err))
+    nursery.plants()
+    
+    invManMenu(empID, storeID)
 
 def customerStart():
         # ask customer if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType',
-                message="Sign in, or create a new account and join today!",
+                message="Hello Customer, sign in or create a new account and join today!",
                 choices=['Sign In', 'Sign Up','Back'],
         ),]
         answer = inquirer.prompt(questions)
@@ -236,7 +476,6 @@ def store(custID):
 
 def startScript():
         # nursery.startup()
-        # nursery.main()
         mainMenu()
 
 startScript()
