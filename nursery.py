@@ -12,7 +12,7 @@ def getConnection():
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="flaket44",
+		passwd="password",
 		database="Nursery"
 	)
 	return conn
