@@ -1,17 +1,18 @@
 import inquirer
 from prettytable import PrettyTable
 import mysql.connector
+import logging
+logging.basicConfig(filename="nursery_logs.log", level=logging.DEBUG)
 
 
 def getConnection():	
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="password",
+		passwd="***",
 		database="nursery"
 	)
 	return conn
-
 
 # -------------------------------------GET PLANT TYPES FROM LOCATION-------------------------------------------
 
@@ -44,6 +45,7 @@ def getAllPlantTypes(custID, store_location):
                 plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
             print(plant_type_table)
             checkForOrders(custID, store_location, plants)
+logging.info("Inside the getAllPlantTypes - end")
 
 # -----------------------------GET PLANT BELOW PRICE RANGE FROM LOCATION----------------------------------
 def getAllPriceRanges(custID, store_location):
@@ -75,6 +77,7 @@ def getAllPriceRanges(custID, store_location):
 			plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
 		print(plant_type_table)
 		checkForOrders(custID, store_location, plants)
+logging.info("Inside the getAllPriceRanges - end")
 
 # ---------------------------------------GET ALL PLANTS FROM LOCATION--------------------------------------
 def getAllPlants(custID, store_location):
@@ -90,6 +93,7 @@ def getAllPlants(custID, store_location):
 			plant_type_table.add_row([i[0], i[1], i[2], i[3], i[4], i[5]])
 		print(plant_type_table)
 		checkForOrders(custID, store_location, plants)
+logging.info("Inside the getAllPriceRanges - end")
 
 
 # -------------------------------------GET PLANTS FROM LOCATION-------------------------------------------
@@ -112,7 +116,7 @@ def getPlantsFromLocation(custID, store_location):
         getAllPlants(custID, store_location)
     elif category == 'Back':
         searchPlants(custID)
-
+logging.info("Inside the getPlantsFromLocation - end")
 
 
 # ------------------------------------INITIAL STORE LIST AND PLANT TYPE LIST--------------------------------------
@@ -129,6 +133,8 @@ def fetchStores():
 		return (result)
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+	logging.error("SQL error - fetchStores() call")
+logging.debug("fetchStores() database operation successful")
 
 
 def fetchStoreId(store_location):
@@ -143,6 +149,8 @@ def fetchStoreId(store_location):
 		return (result)
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+	logging.error("SQL error - fetchStoreId() call")
+logging.debug("fetchStoreId() database operation successful")
 
 
 def fetchPlants(plant_ids):
@@ -162,6 +170,8 @@ def fetchPlants(plant_ids):
 		return (result)
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+	logging.error("SQL error - fetchPlants() call")
+logging.debug("fetchPlants() database operation successful")
 
 
 def fetchPlantTypes():
@@ -176,6 +186,8 @@ def fetchPlantTypes():
 		return (result)
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+	logging.error("SQL error - fetchPlantTypes() call")
+logging.debug("fetchPlantTypes() database operation successful")
 
 
 def fetchPlantsByType(store_location, plant_type):
@@ -197,6 +209,8 @@ def fetchPlantsByType(store_location, plant_type):
 			return (result)
 		except mysql.connector.Error as err:
 			print("MYSQL ERROR: {}".format(err))
+		logging.error("SQL error - fetchPlantsByType() call")
+logging.debug("fetchPlantsByType() database operation successful")
 
 
 def fetchPlantsByPrice(store_location, price):
@@ -215,6 +229,8 @@ def fetchPlantsByPrice(store_location, price):
 			return (result)
 		except mysql.connector.Error as err:
 			print("MYSQL ERROR: {}".format(err))
+		logging.error("SQL error - fetchPlantsByPrice() call")
+logging.debug("fetchPlantsByPrice() database operation successful")
 
 
 
@@ -230,6 +246,9 @@ def fetchAllPlants(store_location):
 		return (result)
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+	logging.error("SQL error - fetchAllPlants() call")
+logging.debug("fetchAllPlants() database operation successful")
+
 
 
 def fetchCustomerAddress(custID):
@@ -244,6 +263,8 @@ def fetchCustomerAddress(custID):
 		return (result)
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+	logging.error("SQL error - fetchCustomerAddress() call")
+logging.debug("fetchCustomerAddress() database operation successful")
 
 # ---------------------------- STORING ORDER DETAILS --------------------------------------
 def saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, plants):
@@ -265,6 +286,7 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 		conn.commit()
 	cursor.close()
 	conn.close()
+logging.info("saveOrderDetails successful")
 
 # ------------------------------MAIN METHOD - SELECT STORE LOCATION-----------------------------------
 def searchPlants(custID):
@@ -281,6 +303,7 @@ def searchPlants(custID):
 
 	if store_location != 'Back':
 		getPlantsFromLocation(custID, store_location)
+logging.info("Inside the searchPlants - end")
 
 
 def makeOrders(custID, store_location, plant_ids):
@@ -335,6 +358,7 @@ def makeOrders(custID, store_location, plant_ids):
 
         prGreen("Your order will be ready for pick-up in our "+store_location+" store in 4 hours.")
         prGreen("Checkout our hot selling plants section! \n")
+logging.info("Inside the makeOrders - end")
 
         
 def checkForOrders(custID, store_location, plant):
@@ -358,6 +382,7 @@ def checkForOrders(custID, store_location, plant):
 	elif order == "No":
 		print("Cool! Check out on our other collections! \n")
 		getPlantsFromLocation(custID, store_location)
+logging.info("Inside the checkForOrders - end")
 
 def prRed(skk): print("\033[91m {}\033[00m" .format(skk))
 def prGreen(skk): print("\033[32m {}\033[00m" .format(skk))
@@ -380,5 +405,7 @@ def choiceForOrders(custID, store_location, plants):
         if order_size > 5:
             prRed("You can select only upto 5 plants!")
             orders = choiceForOrders(custID, store_location, plants)
-
     return orders
+logging.info("Inside the choiceForOrders - end")
+
+# searchPlants("1")
