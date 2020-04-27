@@ -11,14 +11,14 @@ from datetime import datetime
 
 
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="flaket44",
-    database="nursery"
-)
-
-cursor = mydb.cursor()
+def getConnection():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="flaket44",
+        database="nursery"
+    )
+    return conn
 
 # Jasper's changes
 def empManMenu(empID, storeID):
@@ -311,10 +311,15 @@ def promoteEmployee(empID, storeID):
 
 # Jasper's changes
 def getColumnNames(table):
+    conn     = getConnection()
+    cursor   = conn.cursor()
     colNames = []
     sql      = "DESC {}".format(table)
     cursor.execute(sql)
-    result  = cursor.fetchall()
+    result   = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
     for col in result:
         colNames.append(col[0])
     return colNames

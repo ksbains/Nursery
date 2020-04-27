@@ -8,17 +8,19 @@ import re
 from pyfiglet import figlet_format
 from prettytable import PrettyTable
 from datetime import datetime
+import logging
+logging.basicConfig(filename="nursery.log", level=logging.DEBUG)
 
 
+def getConnection():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="flaket44",
+        database="nursery"
+    )
+    return conn
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="flaket44",
-    database="nursery"
-)
-
-cursor = mydb.cursor()
 
 print(figlet_format('Green Ivy', font='slant'))
 print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
@@ -41,7 +43,7 @@ def employeeStart():
         # ask Employee if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType',
-                message="Sign in, or create a new account and join today!",
+                message="Hello Employee, sign in or create a new account and join today!",
                 choices=['Sign In', 'Sign Up', 'Back'],
         ),]
         answer = inquirer.prompt(questions)
@@ -161,13 +163,13 @@ def employeeManagerMainMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType',
                 message="What would you like to do?",
-                choices=['Employee Management', 'Inventory Management','Orders' 'Back'],),]
+                choices=['Employee Management', 'Inventory Management','Orders', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Employee Management":
         empManMenu(empID, storeID)
     elif answer["userType"] == "Inventory Management":
         invManMenu(empID, storeID)
-    elif answer["employeeMain"] == "Orders":
+    elif answer["userType"] == "Orders":
                 orders(empID, storeID)
     else:
         employeeStart()
@@ -464,10 +466,15 @@ def promoteEmployee(empID, storeID):
 
 # Jasper's changes
 def getColumnNames(table):
+    conn     = getConnection()
+    cursor   = conn.cursor()
     colNames = []
     sql      = "DESC {}".format(table)
     cursor.execute(sql)
-    result  = cursor.fetchall()
+    result   = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
     for col in result:
         colNames.append(col[0])
     return colNames
@@ -529,15 +536,21 @@ def addPlantsMenu(empID, storeID):
     invManMenu(empID, storeID)
 
 def deletePlantsMenu(empID, storeID):
+    logging.info("deletePlantsMenu(): attempting to fetch all plants")
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
+        logging.info("deletePlantsMenu(): fetched plants successfully")
     except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+        logging.error("deletePlantsMenu(): {}".format(err))
     #plantList=list(plantDict.values())
     #plantList.append("All the Above")
     #plantList.append("None of the Above")
@@ -559,15 +572,21 @@ def deletePlantsMenu(empID, storeID):
 
 
 def updatePlantsMenu(empID, storeID):
+    logging.info("updatePlantsMenu(): attempting to fetch all plants")
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
+        logging.info("updatePlantsMenu(): fetched plants successfully")
     except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+        logging.error("updatePlantsMenu(): {}".format(err))
     questions = [
                 inquirer.Checkbox('updates',
                 message="What plants do you want to update?",
@@ -607,7 +626,7 @@ def customerStart():
         # ask customer if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType',
-                message="Sign in, or create a new account and join today!",
+                message="Hello Customer, sign in or create a new account and join today!",
                 choices=['Sign In', 'Sign Up','Back'],
         ),]
         answer = inquirer.prompt(questions)
@@ -720,4 +739,4 @@ def startScript():
         # nursery.startup()
         mainMenu()
 
-#startScript()
+startScript()

@@ -1,6 +1,8 @@
 import mysql.connector
 import inquirer
 from prettytable import PrettyTable
+import logging
+logging.basicConfig(filename="nursery.log", level=logging.DEBUG)
 
 
 def getConnection():	
@@ -58,6 +60,7 @@ def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
 
 #Get all orders
 def getAllOrders():
+	logging.info("getAllOrders(): Attempting to fetch all orders")
 	sql = "SELECT * FROM orders"
 	try:
 		conn = getConnection()
@@ -67,14 +70,16 @@ def getAllOrders():
 		ordersDict = processOrderResult(orders)
 		cursor.close()
 		conn.close()
+		logging.info("getAllOrders(): fetched all orders successfully")
 		return ordersDict
 	except mysql.connector.Error as err:
 		prRed("Error fetching orders for employee!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getAllOrders(): {}".format(err))
 		print("\n")
 
 
 def getOrder(orderId):
+	logging.info("getOrder(): Attempting to fetch all order for id '%s'", orderId)
 	sql = "SELECT * FROM orders WHERE order_id = %s"
 	try:
 		conn = getConnection()
@@ -83,15 +88,17 @@ def getOrder(orderId):
 		orderDetails = cursor.fetchone()
 		cursor.close()
 		conn.close()
+		logging.info("getOrder(): fetched order successfully")
 		return orderDetails
 	except mysql.connector.Error as err:
 		prRed("Error fetching order for id")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getOrder(): {}".format(err))
 		print("\n")
 
 
 #update order by employee to delivered
 def updateDeliveredOrder(orderId, status, date):
+	logging.info("updateDeliveredOrder(): Attempting to update order for id '%s' and status '%s'", orderId, status)
 	sql = "UPDATE orders SET order_status = %s, delivered_on = %s WHERE order_id = %s"
 	parameters = (status, date, orderId)
 	try:
@@ -101,14 +108,16 @@ def updateDeliveredOrder(orderId, status, date):
 		conn.commit()
 		cursor.close()
 		conn.close()
+		logging.info("updateDeliveredOrder(): updated successfully")
 	except mysql.connector.Error as err:
 		prRed("Error updating order status and delivered on date!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("updateDeliveredOrder(): {}".format(err))
 		print("\n")
 
 
 #update order by employee to delivered
 def updateCurrentOrder(orderId, status, date):
+	logging.info("updateCurrentOrder(): Attempting to update order for id '%s' and status '%s'", orderId, status)
 	sql = "UPDATE orders SET order_status = %s, expected_delivery_date = %s WHERE order_id = %s"
 	parameters = (status, date, orderId)
 	try:
@@ -118,14 +127,16 @@ def updateCurrentOrder(orderId, status, date):
 		conn.commit()
 		cursor.close()
 		conn.close()
+		logging.info("updateCurrentOrder(): updated successfully")
 	except mysql.connector.Error as err:
 		prRed("Error updating order status and expected date!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("updateCurrentOrder(): {}".format(err))
 		print("\n")
 
 
 #Get orders for given customer id
 def getOrderForGivenCust(cust_id):
+	logging.info("getOrderForGivenCust(): Attempting to fetch orders for customer id '%s'", cust_id)
 	sql = "SELECT * FROM orders WHERE cust_id = %s"
 	try:
 		conn = getConnection()
@@ -135,15 +146,17 @@ def getOrderForGivenCust(cust_id):
 		ordersDict = processOrderResult(result)
 		cursor.close()
 		conn.close()
+		logging.info("getOrderForGivenCust(): fetched orders successfully")
 		return ordersDict
 	except mysql.connector.Error as err:
 		prRed("Error fetching orders for customer!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getOrderForGivenCust(): {}".format(err))
 		print("\n")
 
 
 #Get orders for given customer id and order status
 def getOrderForGivenCustAndStatus(cust_id, orderStatus):
+	logging.info("getOrderForGivenCustAndStatus(): Attempting to fetch orders for customer id '%s' and status '%s'", cust_id, orderStatus)
 	sql = "SELECT * FROM orders WHERE cust_id = %s AND order_status = %s"
 	try:
 		conn = getConnection()
@@ -154,15 +167,17 @@ def getOrderForGivenCustAndStatus(cust_id, orderStatus):
 		ordersDict = processOrderResult(result)
 		cursor.close()
 		conn.close()
+		logging.info("getOrderForGivenCustAndStatus(): fetched orders successfully")
 		return ordersDict
 	except mysql.connector.Error as err:
 		prRed("Error fetching orders for customer with given order status!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getOrderForGivenCustAndStatus(): {}".format(err))
 		print("\n")
 
 
 #Order item menu for given order id and customer
 def getItemsForGivenOrderId(order_id):
+	logging.info("getItemsForGivenOrderId(): Attempting to fetch items for order id '%s'", order_id)
 	sql = '''SELECT i.item_id, p.name, t.type_name, i.quantity, i.price, i.rating
 			FROM order_item i JOIN plant p ON p.plant_id = i.plant_id 
 			JOIN plant_type t ON t.type_id = p.p_type_id
@@ -175,15 +190,17 @@ def getItemsForGivenOrderId(order_id):
 		result = cursor.fetchall()	
 		cursor.close()
 		conn.close()
+		logging.info("getItemsForGivenOrderId(): fetched items successfully")
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error fetching order items for customer of given order id!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getItemsForGivenOrderId(): {}".format(err))
 		print("\n")
 
 
 #Update rating for given order item
 def updateItemRating(itemId, rating):
+	logging.info("updateItemRating(): Attempting to update rating for item id '%s'",itemId)
 	sql = "UPDATE order_item SET rating = %s WHERE item_id = %s"
 	try:
 		conn = getConnection()
@@ -193,9 +210,10 @@ def updateItemRating(itemId, rating):
 		conn.commit()
 		cursor.close()
 		conn.close()
+		logging.info("updateItemRating(): updated successfully")
 	except mysql.connector.Error as err:
 		prRed("Error updating order item rating!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("updateItemRating(): {}".format(err))
 		print("\n")
 
 # ------------------------------------------ Printing methods ---------------------------------------------
@@ -377,8 +395,7 @@ def showEmployeeOrders():
 
 
 
-def updateOrderMenu(orderId):
-	print("Enter values for the attributes you want to update")
+def updateOrderMenu(orderId):	
 	question = [
 		inquirer.List(
 			'status',
@@ -394,7 +411,8 @@ def updateOrderMenu(orderId):
 		]
 		ans = inquirer.prompt(question2)
 		date = ans.get('date')
-		updateDeliveredOrder(orderId, status, date)		
+		updateDeliveredOrder(orderId, status, date)	
+		prGreen("Order has been successfully updated!\n")	
 	elif status == 'Current' or status == 'Dispatched':
 		question2 = [
 			inquirer.Text('date', 'Enter the expected date of delivery')    		
@@ -402,7 +420,7 @@ def updateOrderMenu(orderId):
 		ans = inquirer.prompt(question2)
 		date = ans.get('date')
 		updateCurrentOrder(orderId, status, date)
-	prGreen("Order has been successfully updated!\n")
+		prGreen("Order has been successfully updated!\n")
 	showEmployeeOrders()
 
 
