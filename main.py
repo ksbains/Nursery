@@ -5,15 +5,17 @@ import ordersFlow
 import trendingFlow
 import nursery_store
 from pyfiglet import figlet_format
+import logging
+logging.basicConfig(filename="nursery.log", level=logging.DEBUG)
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="password",
-    database="nursery"
-)
-
-cursor = mydb.cursor()
+def getConnection():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="password",
+        database="nursery"
+    )
+    return conn
 
 print(figlet_format('Green Ivy', font='slant'))
 print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
@@ -287,15 +289,21 @@ def addPlantsMenu(empID, storeID):
     invManMenu(empID, storeID)
 
 def deletePlantsMenu(empID, storeID):
+    logging.info("deletePlantsMenu(): attempting to fetch all plants")
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
+        logging.info("deletePlantsMenu(): fetched plants successfully")
     except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+        logging.error("deletePlantsMenu(): {}".format(err))
     #plantList=list(plantDict.values())
     #plantList.append("All the Above")
     #plantList.append("None of the Above")
@@ -317,15 +325,21 @@ def deletePlantsMenu(empID, storeID):
     
 
 def updatePlantsMenu(empID, storeID):
+    logging.info("updatePlantsMenu(): attempting to fetch all plants")
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
+        logging.info("updatePlantsMenu(): fetched plants successfully")
     except mysql.connector.Error as err:
-        print("MYSQL ERROR: {}".format(err))
+        logging.error("updatePlantsMenu(): {}".format(err))
     questions = [
                 inquirer.Checkbox('updates',
                 message="What plants do you want to update?",

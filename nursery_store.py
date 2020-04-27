@@ -2,14 +2,14 @@ import inquirer
 from prettytable import PrettyTable
 import mysql.connector
 import logging
-logging.basicConfig(filename="nursery_logs.log", level=logging.DEBUG)
+logging.basicConfig(filename="nursery.log", level=logging.DEBUG)
 
 
 def getConnection():
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="***",
+		passwd="password",
 		database="nursery"
 	)
 	return conn
@@ -122,6 +122,7 @@ logging.info("Inside the getPlantsFromLocation - end")
 # ------------------------------------INITIAL STORE LIST AND PLANT TYPE LIST--------------------------------------
 
 def fetchStores():
+	logging.info("fetchStores(): Attempting to fetch address from stores")
 	sql = "SELECT address FROM store"
 	try:
 		conn = getConnection()
@@ -130,14 +131,14 @@ def fetchStores():
 		result = [item[0] for item in cursor.fetchall()]
 		cursor.close()
 		conn.close()
+		logging.info("fetchStores(): fetched address successfully")
 		return (result)
 	except mysql.connector.Error as err:
-		print("MYSQL ERROR: {}".format(err))
-	logging.error("SQL error - fetchStores() call")
-logging.debug("fetchStores() database operation successful")
+		logging.error("fetchStores(): {}".format(err))
 
 
 def fetchStoreId(store_location):
+	logging.info("fetchStoreId(): Attempting to fetch store for address '%s'", store_location)
 	sql = "SELECT store_id FROM store where address = %s"
 	try:
 		conn = getConnection()
@@ -147,13 +148,13 @@ def fetchStoreId(store_location):
 		cursor.close()
 		conn.close()
 		return (result)
+		logging.info("fetchStoreId(): fetched address successfully")
 	except mysql.connector.Error as err:
-		print("MYSQL ERROR: {}".format(err))
-	logging.error("SQL error - fetchStoreId() call")
-logging.debug("fetchStoreId() database operation successful")
+		logging.error("fetchStoreId(): {}".format(err))
 
 
 def fetchPlants(plant_ids):
+	logging.info("fetchPlants(): Attempting to fetch plants for given ids")
 	conn = getConnection()
 	cursor = conn.cursor()
 	t = tuple(plant_ids)
@@ -167,14 +168,14 @@ def fetchPlants(plant_ids):
 		result = cursor.fetchall()
 		cursor.close()
 		conn.close()
+		logging.info("fetchPlants(): fetched plants successfully")
 		return (result)
 	except mysql.connector.Error as err:
-		print("MYSQL ERROR: {}".format(err))
-	logging.error("SQL error - fetchPlants() call")
-logging.debug("fetchPlants() database operation successful")
+		logging.error("fetchPlants(): {}".format(err))
 
 
 def fetchPlantTypes():
+	logging.info("fetchPlantTypes(): Attempting to fetch plant type names")
 	sql = "SELECT type_name FROM plant_type"
 	try:
 		conn = getConnection()
@@ -183,14 +184,14 @@ def fetchPlantTypes():
 		result = [item[0] for item in cursor.fetchall()]
 		cursor.close()
 		conn.close()
+		logging.info("fetchPlantTypes(): fetched plant types successfully")
 		return (result)
 	except mysql.connector.Error as err:
-		print("MYSQL ERROR: {}".format(err))
-	logging.error("SQL error - fetchPlantTypes() call")
-logging.debug("fetchPlantTypes() database operation successful")
+		logging.error("fetchPlantTypes(): {}".format(err))
 
 
 def fetchPlantsByType(store_location, plant_type):
+	logging.info("fetchPlantsByType(): Attempting to fetch plants of given types")
 	conn = getConnection()
 	cursor = conn.cursor()
 	if not plant_type:
@@ -207,13 +208,13 @@ def fetchPlantsByType(store_location, plant_type):
 			cursor.close()
 			conn.close()
 			return (result)
+			logging.info("fetchPlantsByType(): fetched plants successfully")
 		except mysql.connector.Error as err:
-			print("MYSQL ERROR: {}".format(err))
-		logging.error("SQL error - fetchPlantsByType() call")
-logging.debug("fetchPlantsByType() database operation successful")
+			logging.error("fetchPlantsByType(): {}".format(err))
 
 
 def fetchPlantsByPrice(store_location, price):
+	logging.info("fetchPlantsByPrice(): Attempting to fetch plants of given prices")
 	conn = getConnection()
 	cursor = conn.cursor()
 	if price == "0":
@@ -226,15 +227,15 @@ def fetchPlantsByPrice(store_location, price):
 			result = cursor.fetchall()
 			cursor.close()
 			conn.close()
+			logging.info("fetchPlantsByPrice(): fetched plants successfully")
 			return (result)
 		except mysql.connector.Error as err:
-			print("MYSQL ERROR: {}".format(err))
-		logging.error("SQL error - fetchPlantsByPrice() call")
-logging.debug("fetchPlantsByPrice() database operation successful")
+			logging.error("fetchPlantsByPrice(): {}".format(err))
 
 
 
 def fetchAllPlants(store_location):
+	logging.info("fetchAllPlants(): Attempting to fetch all plants")
 	sql = "select distinct p.plant_id, p.name, p.price, p.age, t.type_name, p.description from plant p join plant_locator l on p.plant_id = l.plant_id join store s on s.store_id = l.store_id join plant_type t on p.p_type_id = t.type_id where s.address = %s order by plant_id"
 	try:
 		conn = getConnection()
@@ -243,15 +244,15 @@ def fetchAllPlants(store_location):
 		result = cursor.fetchall()
 		cursor.close()
 		conn.close()
+		logging.info("fetchAllPlants(): fetched plants successfully")
 		return (result)
 	except mysql.connector.Error as err:
-		print("MYSQL ERROR: {}".format(err))
-	logging.error("SQL error - fetchAllPlants() call")
-logging.debug("fetchAllPlants() database operation successful")
+		logging.error("fetchAllPlants(): {}".format(err))
 
 
 
 def fetchCustomerAddress(custID):
+	logging.info("fetchCustomerAddress(): Attempting to fetch customer address for id '%s'", custID)
 	sql = "select address from customer where cust_id = %s"
 	try:
 		conn = getConnection()
@@ -260,14 +261,15 @@ def fetchCustomerAddress(custID):
 		result = [item[0] for item in cursor.fetchall()]
 		cursor.close()
 		conn.close()
+		logging.info("fetchCustomerAddress(): fetched address successfully")
 		return (result)
 	except mysql.connector.Error as err:
-		print("MYSQL ERROR: {}".format(err))
-	logging.error("SQL error - fetchCustomerAddress() call")
-logging.debug("fetchCustomerAddress() database operation successful")
+		logging.error("fetchCustomerAddress(): {}".format(err))
+
 
 # ---------------------------- STORING ORDER DETAILS --------------------------------------
-def saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, plants):
+
+def saveOrderDetails(custID, store_location, order_type, payment_status, order_amount, address, plants):	
 	conn = getConnection()
 	cursor = conn.cursor()
 
@@ -275,10 +277,12 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 	store_id = store_id[0]
 	order_status = "New"
 
+	logging.info("saveOrderDetails(): Attempting to insert orders for customer '%s'", custID)	
 	sql = "INSERT INTO orders(store_id, cust_id, order_date, order_type, order_status, payment_status, price, delivery_address) VALUES(%s, %s, CURDATE(), %s, %s, %s, %s, %s)"
 	cursor.execute(sql, (store_id, custID, order_type, order_status, payment_status, order_amount, address))
 	conn.commit()
 
+	logging.info("saveOrderDetails(): Attempting to insert items")
 	order_id = cursor.lastrowid
 	for i in plants:
 		sql = "INSERT INTO order_item(order_id, quantity, plant_id, price) VALUES(%s, %s, %s, %s)"
@@ -286,7 +290,8 @@ def saveOrderDetails(custID, store_location, order_type, payment_status, order_a
 		conn.commit()
 	cursor.close()
 	conn.close()
-logging.info("saveOrderDetails successful")
+	logging.info("saveOrderDetails(): insert of order and item successful")
+
 
 # ------------------------------MAIN METHOD - SELECT STORE LOCATION-----------------------------------
 def searchPlants(custID):
