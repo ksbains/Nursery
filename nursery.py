@@ -368,6 +368,27 @@ def getCustomer(cust_id, field):
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
 
+def getCustomerByName(cust_username, field):
+	sql = "SELECT * FROM customer WHERE cust_username = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (cust_username,))
+		result = cursor.fetchone()
+		switch={
+		"cust_name": result[1],
+		"cust_id": result[0],
+		"cust_password": result[3],
+		"phone_no": result[4],
+		"address": result[5],
+		"email_id": result[6]
+		}
+		cursor.close()
+		conn.close()
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
 def getCustomerLogin(username, field):
 	sql = "SELECT * FROM customer WHERE username = %s"
 	try:
@@ -451,6 +472,30 @@ def getEmployee(emp_id, field):
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
+
+def getEmployeeByName(username, field):
+	sql = "SELECT * FROM employee WHERE emp_username = %s"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql, (username,))
+		result = cursor.fetchone()
+		switch={
+		"emp_name": result[1],
+		"emp_id": result[0],
+		"emp_password": result[3],
+		"store_id": result[4],
+		"doj": result[5],
+		"phone_no": result[6],
+		"designation": result[7],
+		"supervisor_id": result[8]
+		}
+		cursor.close()
+		conn.close()
+		return switch.get(field, "NOT FOUND")
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
 
 # Jasper's changes
 def getEmployees(storeID):

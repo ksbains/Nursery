@@ -478,4 +478,4 @@ def startScript():
         # nursery.startup()
         mainMenu()
 
-startScript()
+# startScript()
