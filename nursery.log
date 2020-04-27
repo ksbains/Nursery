@@ -1,0 +1,148 @@
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+DEBUG:root:fetchStores() database operation successful
+DEBUG:root:fetchStoreId() database operation successful
+DEBUG:root:fetchPlants() database operation successful
+DEBUG:root:fetchPlantTypes() database operation successful
+DEBUG:root:fetchPlantsByType() database operation successful
+DEBUG:root:fetchPlantsByPrice() database operation successful
+DEBUG:root:fetchAllPlants() database operation successful
+DEBUG:root:fetchCustomerAddress() database operation successful
+INFO:root:saveOrderDetails successful
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:inEmployee(): attempting to fetch employee with username 'ron'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:updateCurrentOrder(): updated successfully
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+DEBUG:root:fetchStores() database operation successful
+DEBUG:root:fetchStoreId() database operation successful
+DEBUG:root:fetchPlants() database operation successful
+DEBUG:root:fetchPlantTypes() database operation successful
+DEBUG:root:fetchPlantsByType() database operation successful
+DEBUG:root:fetchPlantsByPrice() database operation successful
+DEBUG:root:fetchAllPlants() database operation successful
+DEBUG:root:fetchCustomerAddress() database operation successful
+INFO:root:saveOrderDetails successful
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:inEmployee(): attempting to fetch employee with username 'ron'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:updateCurrentOrder(): Attempting to update order for id '3' and status 'Current'
+INFO:root:updateCurrentOrder(): updated successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:inCustomer(): attempting to fetch customer with username 'j'
+INFO:root:inCustomer(): fetch of customer successful
+INFO:root:getOrderForGivenCustAndStatus(): Attempting to fetch orders for customer id '1' and status 'New'
+INFO:root:getOrderForGivenCustAndStatus(): fetched orders successfully
+INFO:root:getPlantsWithRating(): Attempting to fetch plants by rating
+INFO:root:getPlantsWithRating(): Fetched data successfully
+INFO:root:getPlantsOrderMost(): Attempting to fetch plants by most ordered
+INFO:root:getPlantsOrderMost(): Fetched data successfully
+INFO:root:getPlantsOrderMost(): Attempting to fetch plants by most ordered
+INFO:root:getPlantsOrderMost(): Fetched data successfully
+INFO:root:getTopPlantGivenType(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenType(): fetched data successfully
+INFO:root:getTopPlantGivenStore(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenStore(): fetched data successfully
+INFO:root:getOrderForGivenCust(): Attempting to fetch orders for customer id '1'
+INFO:root:getOrderForGivenCust(): fetched orders successfully
+INFO:root:getItemsForGivenOrderId(): Attempting to fetch items for order id '1'
+INFO:root:getItemsForGivenOrderId(): fetched items successfully
+INFO:root:getItemsForGivenOrderId(): Attempting to fetch items for order id '4'
+INFO:root:getItemsForGivenOrderId(): fetched items successfully
+INFO:root:updateItemRating(): updated successfully
+INFO:root:updateItemRating(): updated successfully
+INFO:root:getOrderForGivenCust(): Attempting to fetch orders for customer id '1'
+INFO:root:getOrderForGivenCust(): fetched orders successfully
+INFO:root:getPlantsWithRating(): Attempting to fetch plants by rating
+INFO:root:getPlantsWithRating(): Fetched data successfully
+INFO:root:getPlantsOrderMost(): Attempting to fetch plants by most ordered
+INFO:root:getPlantsOrderMost(): Fetched data successfully
+INFO:root:getTopPlantGivenType(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenType(): fetched data successfully
+INFO:root:getTopPlantGivenType(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenType(): fetched data successfully
+INFO:root:getTopPlantGivenType(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenType(): fetched data successfully
+INFO:root:getTopPlantGivenType(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenType(): fetched data successfully
+INFO:root:getTopPlantGivenStore(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenStore(): fetched data successfully
+INFO:root:inEmployee(): attempting to fetch employee with username 'ron'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:inCustomer(): attempting to fetch customer with username 'j'
+INFO:root:inCustomer(): fetch of customer successful
+INFO:root:fetchStores(): Attempting to fetch address from stores
+INFO:root:fetchStores(): fetched address successfully
+INFO:root:fetchPlantTypes(): Attempting to fetch plant type names
+INFO:root:fetchPlantTypes(): fetched plant types successfully
+INFO:root:fetchPlantsByType(): Attempting to fetch plants of given types
+INFO:root:fetchPlants(): Attempting to fetch plants for given ids
+INFO:root:fetchPlants(): fetched plants successfully
+INFO:root:fetchCustomerAddress(): Attempting to fetch customer address for id '1'
+INFO:root:fetchCustomerAddress(): fetched address successfully
+INFO:root:fetchStoreId(): Attempting to fetch store for address 'San Jose'
+INFO:root:saveOrderDetails(): Attempting to insert orders for customer '1'
+INFO:root:saveOrderDetails(): Attempting to insert items
+INFO:root:saveOrderDetails(): insert of order and item successful
+INFO:root:fetchStores(): Attempting to fetch address from stores
+INFO:root:fetchStores(): fetched address successfully
+INFO:root:fetchPlantsByPrice(): Attempting to fetch plants of given prices
+INFO:root:fetchPlantsByPrice(): fetched plants successfully
+INFO:root:fetchPlants(): Attempting to fetch plants for given ids
+INFO:root:fetchPlants(): fetched plants successfully
+INFO:root:fetchStoreId(): Attempting to fetch store for address 'Fresno'
+INFO:root:saveOrderDetails(): Attempting to insert orders for customer '1'
+INFO:root:saveOrderDetails(): Attempting to insert items
+INFO:root:saveOrderDetails(): insert of order and item successful
+INFO:root:getOrderForGivenCust(): Attempting to fetch orders for customer id '1'
+INFO:root:getOrderForGivenCust(): fetched orders successfully
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:inEmployee(): attempting to fetch employee with username 'ron'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully

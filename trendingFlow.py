@@ -2,6 +2,8 @@ import mysql.connector
 import inquirer
 from prettytable import PrettyTable
 import nursery_store
+import logging
+logging.basicConfig(filename="nursery.log", level=logging.DEBUG)
 
 def getConnection():	
 	conn = mysql.connector.connect(
@@ -20,6 +22,7 @@ def prYellow(skk): print("\033[93m {}\033[00m" .format(skk))
 #--------------------------------------- SQL queries -------------------------------------
 
 def getPlantsWithRating():
+	logging.info("getPlantsWithRating(): Attempting to fetch plants by rating")
 	sql = """SELECT DISTINCT p.plant_id, p.name, t.type_name, p.price, AVG(i.rating) AS customer_rating 
 	      FROM plant p JOIN order_item i ON p.plant_id = i.plant_id 
 		  JOIN plant_type t ON p.p_type_id = t.type_id 
@@ -33,14 +36,16 @@ def getPlantsWithRating():
 		plants = cursor.fetchall()
 		cursor.close()
 		conn.close()
+		logging.info("getPlantsWithRating(): Fetched data successfully")
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by rating!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getPlantsWithRating(): {}".format(err))
 		print("\n")
 
 
 def getPlantsOrderMost():
+	logging.info("getPlantsOrderMost(): Attempting to fetch plants by most ordered")
 	sql = """SELECT p.plant_id, p.name, t.type_name, p.price, COUNT(i.plant_id) AS ordered_count, AVG(i.rating) AS avg_rating 
 		  FROM plant p JOIN order_item i ON p.plant_id = i.plant_id 
 		  JOIN plant_type t ON p.p_type_id = t.type_id
@@ -53,14 +58,16 @@ def getPlantsOrderMost():
 		plants = cursor.fetchall()
 		cursor.close()
 		conn.close()
+		logging.info("getPlantsOrderMost(): Fetched data successfully")
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by most ordered!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getPlantsOrderMost(): {}".format(err))
 		print("\n")
 
 
 def getTopPlantGivenType(plantType):
+	logging.info("getTopPlantGivenType(): Attempting to fetch plants by type")
 	sql = """SELECT p.plant_id, p.name, p.price, COUNT(i.plant_id) AS ordered_count, AVG(i.rating) AS avg_rating 
 		  FROM plant p JOIN order_item i ON p.plant_id = i.plant_id 
 		  JOIN plant_type t ON p.p_type_id = t.type_id
@@ -74,14 +81,16 @@ def getTopPlantGivenType(plantType):
 		plants = cursor.fetchall()
 		cursor.close()
 		conn.close()
+		logging.info("getTopPlantGivenType(): fetched data successfully")
 		return plants
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by type!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getTopPlantGivenType(): {}".format(err))
 		print("\n")
 
 
 def getTopPlantGivenStore(store):
+	logging.info("getTopPlantGivenStore(): Attempting to fetch plants by type")
 	sql = """SELECT p.plant_id, p.name, p.price, t.type_name,
 		  COUNT(i.plant_id) AS ordered_count, AVG(i.rating) AS avg_rating  
 		  FROM plant p JOIN order_item i ON p.plant_id = i.plant_id
@@ -98,29 +107,11 @@ def getTopPlantGivenStore(store):
 		result = cursor.fetchall()
 		cursor.close()
 		conn.close()
+		logging.info("getTopPlantGivenStore(): fetched data successfully")
 		return result
 	except mysql.connector.Error as err:
 		prRed("Error in fetching trending plants by store!")
-		prRed("MYSQL ERROR: {}".format(err))
-		print("\n")
-
-
-def getStoresForPlant(plantId):
-	sql = """SELECT s.address FROM plant p JOIN plant_locator l
-		  ON p.plant_id = l.plant_id
-		  JOIN store s ON s.store_id = l.store_id
-		  WHERE p.plant_id = %s"""
-	try:
-		conn = getConnection()
-		cursor = conn.cursor()
-		cursor.execute(sql, (plantId,))
-		result = cursor.fetchall()
-		cursor.close()
-		conn.close()
-		return result
-	except mysql.connector.Error as err:
-		prRed("Error in fetching stores for given plant!")
-		prRed("MYSQL ERROR: {}".format(err))
+		logging.error("getTopPlantGivenStore(): {}".format(err))
 		print("\n")
 
 
