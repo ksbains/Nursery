@@ -156,13 +156,13 @@ def employeeManagerMainMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
-                choices=['Employee Management', 'Inventory Management','Orders' 'Back'],),]
+                choices=['Employee Management', 'Inventory Management','Orders', 'Back'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Employee Management":
         empManMenu(empID, storeID)
     elif answer["userType"] == "Inventory Management":
         invManMenu(empID, storeID)
-    elif answer["employeeMain"] == "Orders":
+    elif answer["userType"] == "Orders":
                 orders(empID, storeID)
     else:
         employeeStart()
