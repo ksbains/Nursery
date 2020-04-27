@@ -2,14 +2,14 @@ import nursery
 import inquirer
 import mysql.connector
 
-mydb = mysql.connector.connect(
-	host="127.0.0.1",
-	user="root",
-	passwd="password",
-	database="nursery"
-)
-
-cursor = mydb.cursor()
+def getConnection():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="***",
+        database="nursery"
+    )
+    return conn
 
 def mainMenu(empID, storeID):
     questions = [inquirer.List(
@@ -71,10 +71,14 @@ def deletePlantsMenu(empID, storeID):
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
     #plantList=list(plantDict.values())
@@ -101,10 +105,14 @@ def updatePlantsMenu(empID, storeID):
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
     '''for i in range(len(plantList)):
@@ -137,10 +145,14 @@ def updatePlantsMenu(empID, storeID):
 def showPlantsMenu(empID, storeID):
     sql = "SELECT p.name, p.price, p.description, p.age FROM plant p"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             print(row)
+        cursor.close()
+        conn.close()
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
     invManMenu(empID, storeID)

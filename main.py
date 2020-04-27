@@ -6,14 +6,14 @@ import trendingFlow
 import nursery_store
 from pyfiglet import figlet_format
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="password",
-    database="nursery"
-)
-
-cursor = mydb.cursor()
+def getConnection():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="***",
+        database="nursery"
+    )
+    return conn
 
 print(figlet_format('Green Ivy', font='slant'))
 print("---------------WELCOME TO GREEN IVY NURSERY-------------- \n\n")
@@ -290,10 +290,14 @@ def deletePlantsMenu(empID, storeID):
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
     #plantList=list(plantDict.values())
@@ -320,10 +324,14 @@ def updatePlantsMenu(empID, storeID):
     plantDict={}
     sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
     try:
+        conn = getConnection()
+        cursor = conn.cursor()
         cursor.execute(sql) #, storeID)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
+        cursor.close()
+        conn.close()
     except mysql.connector.Error as err:
         print("MYSQL ERROR: {}".format(err))
     questions = [
