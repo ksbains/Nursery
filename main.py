@@ -36,7 +36,7 @@ def employeeStart():
         # ask Employee if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType',
-                message="Sign in, or create a new account and join today!",
+                message="Hello Employee, sign in or create a new account and join today!",
                 choices=['Sign In', 'Sign Up', 'Back'],
         ),]
         answer = inquirer.prompt(questions)
@@ -365,7 +365,7 @@ def customerStart():
         # ask customer if they want to sign up or sign in
         questions = [inquirer.List(
                 'userType',
-                message="Sign in, or create a new account and join today!",
+                message="Hello Customer, sign in or create a new account and join today!",
                 choices=['Sign In', 'Sign Up','Back'],
         ),]
         answer = inquirer.prompt(questions)
