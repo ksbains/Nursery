@@ -3,16 +3,17 @@ import mysql.connector
 import hashlib
 import binascii
 import os
+import csv
 
-def getConnection():	
+def getConnection():
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="password",
-		database="nursery"
+		passwd="flaket44",
+		database="Nursery"
 	)
 	return conn
-	
+
 #-----------------------------------------------INSERT into TABLES------------------------------------------------------------
 def insert_plant(name, price, description, age):
 	conn = getConnection()
@@ -596,7 +597,7 @@ def customers():
 		conn.close()
 	except mysql.connector.Error as err:
 		print("MYSQL ERROR: {}".format(err))
-		
+
 
 def orders():
 	sql = "SELECT * FROM orders"
@@ -669,21 +670,38 @@ def inCustomer(username):
 def hash_password(password):
     """Hash a password for storing."""
     salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'), 
+    pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),
                                 salt, 100000)
     pwdhash = binascii.hexlify(pwdhash)
     return (salt + pwdhash).decode('ascii')
- 
+
 def verify_password(stored_password, provided_password):
     """Verify a stored password against one provided by user"""
     salt = stored_password[:64]
     stored_password = stored_password[64:]
-    pwdhash = hashlib.pbkdf2_hmac('sha512', 
-                                  provided_password.encode('utf-8'), 
-                                  salt.encode('ascii'), 
+    pwdhash = hashlib.pbkdf2_hmac('sha512',
+                                  provided_password.encode('utf-8'),
+                                  salt.encode('ascii'),
                                   100000)
     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
     return pwdhash == stored_password
+
+# Jasper's changes
+def initializeEmployee():
+	sql = "INSERT INTO employee(emp_name, emp_username, emp_password, store_id, doj, phone_no, designation, supervisor_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		csvFile = csv.reader(open('employee.csv', 'r'))
+		for employeeData in csvFile:
+			employeeData[2] = hash_password(employeeData[2])
+			cursor.execute(sql, employeeData)
+		conn.commit()
+		cursor.close()
+		conn.close()
+	except mysql.connector.Error as err:
+		print("MYSQL ERROR: {}".format(err))
+
 
 def startup():
 	#EMPLOYEE
@@ -695,15 +713,18 @@ def startup():
 	EmployeePhoneNo = "0123456789"
 	EmployeeDesignation = "Worker"
 
-	
-	
+
+
 	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, None)
-	
+
 	#insert_manager(Name, username, password, storeID, DOJ, phone_no)
 	insert_manager("Lebron James","lbj", "password", 1, "2020-01-26", "9876543210")
 	insert_manager("Kobe","kobe", "password", 2, "2020-01-26", "9876543210")
-	insert_manager("James Harden","jh", "password", 3, "2020-01-26", "9876543210") 
+	insert_manager("James Harden","jh", "password", 3, "2020-01-26", "9876543210")
 	insert_manager("Wardell Curry","sc", "password", 4, "2020-01-26", "9876543210")
 	insert_manager("Klay Thompson","kt", "password", 5, "2020-01-26", "9876543210")
 	insert_manager("Draymond Green","dg", "password", 6, "2020-01-26", "9876543210")
 	insert_manager("Javale Mcgee","jm", "password", 7, "2020-01-26", "9876543210")
+
+	# Jasper's changes
+	initializeEmployee()
