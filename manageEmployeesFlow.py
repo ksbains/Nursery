@@ -184,8 +184,9 @@ def hireEmployee(empID, storeID):
 
     questions   = [inquirer.List('job_title',  message='Select employee job title',choices=['Manager', 'Sales Associate'],default='Sales Associate')]
     empJobTitle = inquirer.prompt(questions)['job_title']
+
+    empMngrID   = empID if not 'Manager' == empJobTitle else None
     empStoreID  = storeID
-    empMngrID   = empID
 
     nursery.insert_employee(empName, empUserName, empPassword, empStoreID, empStartDate, empPhone, empJobTitle, empMngrID)
     print('\n[Employee successfully entered]\n')
@@ -330,6 +331,7 @@ def showTabularResults(rows, columnNames, columnWidth, tableTitle):
     columnWidths = {}
     t            = PrettyTable(columnNames)
     t.title      = tableTitle
+    t.align      = "l"
     t._max_width = columnWidths
 
     for col in columnNames:

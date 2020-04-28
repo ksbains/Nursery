@@ -201,3 +201,80 @@ INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
 INFO:root:getEmployees(): attempting to fetch employee with store id '1'
 INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'robPri'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'Price'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+ERROR:root:getAllOrders(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:delete_plant(): attempting to delete employee with id '63'
+INFO:root:delete_plant(): delete of employee successful for id '63'
+INFO:root:delete_plant(): attempting to delete employee with id '65'
+INFO:root:delete_plant(): delete of employee successful for id '65'
+INFO:root:delete_plant(): attempting to delete employee with id '66'
+INFO:root:delete_plant(): delete of employee successful for id '66'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
