@@ -278,3 +278,45 @@ INFO:root:insert_employee(): attempting to insert data into employee table
 INFO:root:insert_employee(): insert into employee table successful
 INFO:root:getEmployees(): attempting to fetch employee with store id '1'
 INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:Inside the getAllPlantTypes - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the choiceForOrders - end
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:update_supID(): attempting to update employee of id '44'
+INFO:root:update_supID(): updated employee data successfully for id '44'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'

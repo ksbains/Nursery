@@ -15,7 +15,7 @@ def getConnection():
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="password",
+        passwd="flaket44",
         database="nursery"
     )
     return conn
@@ -24,7 +24,7 @@ def getConnection():
 def empManMenu(empID, storeID):
     questions = [inquirer.List('empManageOption',
                 message="What would you like to do?",
-                choices=['View Employees', 'Hire Employee', 'Fire Employee', 'Promote Employee', 'Back'])]
+                choices=['View Employees', 'Hire Employee', 'Fire Employee', 'Promote Employee', 'Demote Employee', 'Back'])]
     answer    = inquirer.prompt(questions)['empManageOption']
 
     if answer == 'View Employees':
@@ -35,6 +35,8 @@ def empManMenu(empID, storeID):
         fireEmployee(empID, storeID)
     elif answer == "Promote Employee":
         promoteEmployee(empID, storeID)
+    elif answer == 'Demote Employee':
+        demoteEmployee(empID, storeID)
     else:
         employeeManagerMainMenu(empID, storeID)
 
@@ -309,6 +311,51 @@ def promoteEmployee(empID, storeID):
                     nursery.update_supID(empIDMapping[emp], None)
                 print('\n[Successfully updated]\n')
             empManMenu(empID, storeID)
+
+
+# Jasper's changes
+def demoteEmployee(empID, storeID):
+    indexes         = [2, 3, 5, 6]
+    employees       = nursery.getEmployees(storeID)
+    employeesString = []
+    empIDMapping    = {}
+
+    # Store the following values for each employee as a string in employeesString:
+    # emp_id, emp_name, store_id, designation, supervisor_id
+    for emp in employees:
+        if emp[0] == empID or emp[8]:
+            continue
+        temp = list(emp)
+        temp = map(str, temp)
+        for index in sorted(indexes, reverse=True):
+            del temp[index]
+        newString = ', '.join(temp)
+        employeesString.append(newString)
+        empIDMapping[newString] = emp[0]
+
+    while True:
+        questions = [inquirer.Checkbox('demotees', message="Select employees for demotion", choices=employeesString)]
+        demotees  = inquirer.prompt(questions)['demotees']
+
+        if not demotees:
+            print('\n[No employees selected]\n')
+            questions = [inquirer.List('select option',message="Choose", choices=['Select again', 'Cancel'])]
+            answer    = inquirer.prompt(questions)['select option']
+
+            if answer == 'Select again':
+                continue
+            else:
+                empManMenu(empID, storeID)
+        else:
+            questions = [inquirer.List('confirm',message="Select", choices=['Confirm', 'Cancel'])]
+            confirm   = inquirer.prompt(questions)['confirm']
+
+            if confirm == 'Confirm':
+                for emp in demotees:
+                    nursery.update_supID(empIDMapping[emp], empID)
+                print('\n[Successfully updated]\n')
+            empManMenu(empID, storeID)
+
 
 # Jasper's changes
 def getColumnNames(table):
