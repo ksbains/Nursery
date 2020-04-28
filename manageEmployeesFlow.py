@@ -24,7 +24,7 @@ def getConnection():
 def empManMenu(empID, storeID):
     questions = [inquirer.List('empManageOption',
                 message="What would you like to do?",
-                choices=['View Employees', 'Hire Employee', 'Fire Employee', 'Promote Employee', 'Back'])]
+                choices=['View Employees', 'Hire Employee', 'Fire Employee', 'Promote Employee', 'Demote Employee', 'Back'])]
     answer    = inquirer.prompt(questions)['empManageOption']
 
     if answer == 'View Employees':
@@ -35,28 +35,77 @@ def empManMenu(empID, storeID):
         fireEmployee(empID, storeID)
     elif answer == "Promote Employee":
         promoteEmployee(empID, storeID)
+    elif answer == 'Demote Employee':
+        demoteEmployee(empID, storeID)
     else:
         employeeManagerMainMenu(empID, storeID)
 
 
 # Jasper's changes
 def viewEmployees(empID, storeID):
-    employees   = nursery.getEmployees(storeID)
+
+    # employees   = nursery.getEmployees(storeID)
+    employees   = []
     columnNames = getColumnNames('employee')
     columnNames.pop(3)
-    employeesExceptPw = []
+    colNames    = ['ID', 'Name', 'Username', 'Store ID', 'Start Date', 'Phone Number', 'Designation', 'Supervisor ID']
+    columnMap   = {name: columnNames[index] for index, name in enumerate(colNames)}
+    orderBy     = ''
+    where       = ''
 
-    for emp in employees:
-        temp = list(emp)
-        temp.pop(3)
-        employeesExceptPw.append(tuple(temp))
-    showTabularResults(employeesExceptPw, columnNames, 30, 'Employee')
+    while True:
+        questions   = [inquirer.List('viewOptions',message="Select", choices=['Sort by', 'Filter', 'back'])]
+        viewOptions = inquirer.prompt(questions)['viewOptions']
 
-    questions = [inquirer.List('done',message="Press", choices=['Done'])]
-    done      = inquirer.prompt(questions)['done']
+        if 'Sort by'    == viewOptions:
+            questions   = [inquirer.Checkbox('sort', message="Sort by", choices=colNames[0:4])]
+            sort        = inquirer.prompt(questions)['sort']
+            sortString  = [str(columnMap[col]) for col in sort]
+            orderBy     = ', '.join(sortString)
 
-    if done:
-        empManMenu(empID, storeID)
+            # query(select, table, where, orderBy)
+            employees = nursery.query(None, 'employee', None, orderBy)
+
+        elif 'Filter'   == viewOptions:
+            questions   = [inquirer.List('filter',message="Filter by", choices=['Manager', 'Sales Associate', 'Store ID'])]
+            filter      = inquirer.prompt(questions)['filter']
+
+            if 'Manager' == filter or 'Sales Associate' == filter:
+                where = 'designation = \'{}\''.format(filter)
+            else:
+                stores          = nursery.getStores()
+                storesString    = []
+                storesIDMapping = {}
+
+                for store in stores:
+                    temp = list(store)
+                    temp = map(str, temp)
+                    newString = ', '.join(temp)
+                    storesString.append(newString)
+                    storesIDMapping[newString] = store[0]
+
+                questions   = [inquirer.List('storeIDs',message="Select store", choices=storesIDMapping)]
+                storeIDs    = inquirer.prompt(questions)['storeIDs']
+
+                where = 'store_id = {}'.format(storesIDMapping[storeIDs])
+
+            # query(select, table, where, orderBy)
+            employees = nursery.query(None, 'employee', where, None)
+
+        else:
+            empManMenu(empID, storeID)
+
+        if not employees:
+            print('[No results]')
+            continue
+
+        employeesExceptPw = []
+        for emp in employees:
+            temp = list(emp)
+            temp.pop(3)
+            employeesExceptPw.append(tuple(temp))
+        showTabularResults(employeesExceptPw, columnNames, 30, 'Employee')
+
 
 
 # Jasper's changes
@@ -306,9 +355,54 @@ def promoteEmployee(empID, storeID):
 
             if confirm == 'Confirm':
                 for emp in promotees:
-                    nursery.update_supID(empIDMapping[emp], None)
+                    nursery.update_supID(empIDMapping[emp], 'Manager', None)
                 print('\n[Successfully updated]\n')
             empManMenu(empID, storeID)
+
+
+# Jasper's changes
+def demoteEmployee(empID, storeID):
+    indexes         = [2, 3, 5, 6]
+    employees       = nursery.getEmployees(storeID)
+    employeesString = []
+    empIDMapping    = {}
+
+    # Store the following values for each employee as a string in employeesString:
+    # emp_id, emp_name, store_id, designation, supervisor_id
+    for emp in employees:
+        if emp[0] == empID or emp[8]:
+            continue
+        temp = list(emp)
+        temp = map(str, temp)
+        for index in sorted(indexes, reverse=True):
+            del temp[index]
+        newString = ', '.join(temp)
+        employeesString.append(newString)
+        empIDMapping[newString] = emp[0]
+
+    while True:
+        questions = [inquirer.Checkbox('demotees', message="Select employees for demotion", choices=employeesString)]
+        demotees  = inquirer.prompt(questions)['demotees']
+
+        if not demotees:
+            print('\n[No employees selected]\n')
+            questions = [inquirer.List('select option',message="Choose", choices=['Select again', 'Cancel'])]
+            answer    = inquirer.prompt(questions)['select option']
+
+            if answer == 'Select again':
+                continue
+            else:
+                empManMenu(empID, storeID)
+        else:
+            questions = [inquirer.List('confirm',message="Select", choices=['Confirm', 'Cancel'])]
+            confirm   = inquirer.prompt(questions)['confirm']
+
+            if confirm == 'Confirm':
+                for emp in demotees:
+                    nursery.update_supID(empIDMapping[emp], 'Sales Associate', empID)
+                print('\n[Successfully updated]\n')
+            empManMenu(empID, storeID)
+
 
 # Jasper's changes
 def getColumnNames(table):
