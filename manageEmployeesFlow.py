@@ -15,7 +15,7 @@ def getConnection():
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
-        passwd="flaket44",
+        passwd="password",
         database="nursery"
     )
     return conn
@@ -43,22 +43,69 @@ def empManMenu(empID, storeID):
 
 # Jasper's changes
 def viewEmployees(empID, storeID):
-    employees   = nursery.getEmployees(storeID)
+
+    # employees   = nursery.getEmployees(storeID)
+    employees   = []
     columnNames = getColumnNames('employee')
     columnNames.pop(3)
-    employeesExceptPw = []
+    colNames    = ['ID', 'Name', 'Username', 'Store ID', 'Start Date', 'Phone Number', 'Designation', 'Supervisor ID']
+    columnMap   = {name: columnNames[index] for index, name in enumerate(colNames)}
+    orderBy     = ''
+    where       = ''
 
-    for emp in employees:
-        temp = list(emp)
-        temp.pop(3)
-        employeesExceptPw.append(tuple(temp))
-    showTabularResults(employeesExceptPw, columnNames, 30, 'Employee')
+    while True:
+        questions   = [inquirer.List('viewOptions',message="Select", choices=['Sort by', 'Filter', 'back'])]
+        viewOptions = inquirer.prompt(questions)['viewOptions']
 
-    questions = [inquirer.List('done',message="Press", choices=['Done'])]
-    done      = inquirer.prompt(questions)['done']
+        if 'Sort by'    == viewOptions:
+            questions   = [inquirer.Checkbox('sort', message="Sort by", choices=colNames[0:4])]
+            sort        = inquirer.prompt(questions)['sort']
+            sortString  = [str(columnMap[col]) for col in sort]
+            orderBy     = ', '.join(sortString)
 
-    if done:
-        empManMenu(empID, storeID)
+            # query(select, table, where, orderBy)
+            employees = nursery.query(None, 'employee', None, orderBy)
+
+        elif 'Filter'   == viewOptions:
+            questions   = [inquirer.List('filter',message="Filter by", choices=['Manager', 'Sales Associate', 'Store ID'])]
+            filter      = inquirer.prompt(questions)['filter']
+
+            if 'Manager' == filter or 'Sales Associate' == filter:
+                where = 'designation = \'{}\''.format(filter)
+            else:
+                stores          = nursery.getStores()
+                storesString    = []
+                storesIDMapping = {}
+
+                for store in stores:
+                    temp = list(store)
+                    temp = map(str, temp)
+                    newString = ', '.join(temp)
+                    storesString.append(newString)
+                    storesIDMapping[newString] = store[0]
+
+                questions   = [inquirer.List('storeIDs',message="Select store", choices=storesIDMapping)]
+                storeIDs    = inquirer.prompt(questions)['storeIDs']
+
+                where = 'store_id = {}'.format(storesIDMapping[storeIDs])
+
+            # query(select, table, where, orderBy)
+            employees = nursery.query(None, 'employee', where, None)
+
+        else:
+            empManMenu(empID, storeID)
+
+        if not employees:
+            print('[No results]')
+            continue
+
+        employeesExceptPw = []
+        for emp in employees:
+            temp = list(emp)
+            temp.pop(3)
+            employeesExceptPw.append(tuple(temp))
+        showTabularResults(employeesExceptPw, columnNames, 30, 'Employee')
+
 
 
 # Jasper's changes
@@ -308,7 +355,7 @@ def promoteEmployee(empID, storeID):
 
             if confirm == 'Confirm':
                 for emp in promotees:
-                    nursery.update_supID(empIDMapping[emp], None)
+                    nursery.update_supID(empIDMapping[emp], 'Manager', None)
                 print('\n[Successfully updated]\n')
             empManMenu(empID, storeID)
 
@@ -352,7 +399,7 @@ def demoteEmployee(empID, storeID):
 
             if confirm == 'Confirm':
                 for emp in demotees:
-                    nursery.update_supID(empIDMapping[emp], empID)
+                    nursery.update_supID(empIDMapping[emp], 'Sales Associate', empID)
                 print('\n[Successfully updated]\n')
             empManMenu(empID, storeID)
 

@@ -12,7 +12,7 @@ def getConnection():
 	conn = mysql.connector.connect(
 		host="localhost",
 		user="root",
-		passwd="flaket44",
+		passwd="password",
 		database="Nursery"
 	)
 	return conn
@@ -617,10 +617,68 @@ def getEmployees(storeID):
 
 
 # Jasper's changes
-def update_supID(emp_id, supervisor_id):
+def getStores():
+	logging.info("getStore(): attempting to fetch all stores")
+	sql = "SELECT * FROM store"
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+		cursor.execute(sql)
+		result = cursor.fetchall()
+		cursor.close()
+		conn.close()
+		logging.info("getStore(): fetched stores data successfully")
+		return result
+	except mysql.connector.Error as err:
+		logging.error("getStores(): {}".format(err))
+
+
+# Jasper's changes
+def query(select, table, where, orderBy):
+	logging.info("query(): attempting to query DB with select, table, where, orderBy")
+	sql = ""
+	try:
+		conn = getConnection()
+		cursor = conn.cursor()
+
+		if select:
+			sql += 'SELECT {} FROM {} '.format(select, table)
+		else:
+			sql += 'SELECT * FROM {} '.format(table)
+		if where:
+		    sql += 'WHERE {}'.format(where)
+		if orderBy:
+		    sql += ' ORDER BY {}'.format(orderBy)
+
+		cursor.execute(sql)
+		result = cursor.fetchall()
+		cursor.close()
+		conn.close()
+		logging.info("query(): queried DB successfully with select, table, where, orderyBy")
+		return result
+	except mysql.connector.Error as err:
+		logging.error("query(): {}".format(err))
+
+
+# # Jasper's changes
+# def update_supID(emp_id, supervisor_id):
+# 	logging.info("update_supID(): attempting to update employee of id '%s'", emp_id)
+# 	sql = "UPDATE employee SET supervisor_id = %s, designation = %s WHERE emp_id = %s"
+# 	data = (supervisor_id,"Manager",emp_id)
+# 	conn = getConnection()
+# 	cursor = conn.cursor()
+# 	cursor.execute(sql, data)
+# 	conn.commit()
+# 	cursor.close()
+# 	conn.close()
+# 	logging.info("update_supID(): updated employee data successfully for id '%s'", emp_id)
+
+
+# Jasper's changes
+def update_supID(emp_id, designation, supervisor_id):
 	logging.info("update_supID(): attempting to update employee of id '%s'", emp_id)
 	sql = "UPDATE employee SET supervisor_id = %s, designation = %s WHERE emp_id = %s"
-	data = (supervisor_id,"Manager",emp_id)
+	data = (supervisor_id, designation ,emp_id)
 	conn = getConnection()
 	cursor = conn.cursor()
 	cursor.execute(sql, data)
@@ -628,6 +686,8 @@ def update_supID(emp_id, supervisor_id):
 	cursor.close()
 	conn.close()
 	logging.info("update_supID(): updated employee data successfully for id '%s'", emp_id)
+
+
 
 
 def getEmployeeLogin(username, field):
