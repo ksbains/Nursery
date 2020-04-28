@@ -155,6 +155,7 @@ INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
 INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+
 ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -184,6 +185,11 @@ INFO:root:inEmployee(): attempting to fetch employee with username 'kobee'
 ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
 INFO:root:inEmployee(): attempting to fetch employee with username 'kobe'
 ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -193,7 +199,14 @@ INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
 INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+
 ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_employee(): attempting to insert data into employee table
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -210,8 +223,15 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
 INFO:root:getAllOrders(): Attempting to fetch all orders
 ERROR:root:getAllOrders(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -220,6 +240,7 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
 INFO:root:plants(): attempting to fetch all plants
 ERROR:root:plants(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
 INFO:root:plants(): attempting to fetch all plants
@@ -227,6 +248,10 @@ ERROR:root:plants(): 1045 (28000): Access denied for user 'root'@'localhost' (us
 INFO:root:plants(): attempting to fetch all plants
 ERROR:root:plants(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
 INFO:root:insert_plant(): attempting to insert data into plant table
+
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -235,6 +260,9 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
+INFO:root:insert_employee(): attempting to insert data into employee table
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -243,8 +271,19 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
 INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
 INFO:root:inEmployee(): fetch of employee successful
+
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'robPri'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'Price'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+ERROR:root:getAllOrders(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -253,6 +292,7 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+<<<<<<< HEAD
 INFO:root:plants(): attempting to fetch all plants
 INFO:root:plants(): fetch of plants successful
 INFO:root:insert_plant(): attempting to insert data into plant table
@@ -303,7 +343,23 @@ ERROR:root:deletePlantsMenu(): 1062 (23000): Duplicate entry 'py' for key 'plant
 INFO:root:plants(): attempting to fetch all plants
 INFO:root:plants(): fetch of plants successful
 INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successfull
+
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
 INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:delete_plant(): attempting to delete employee with id '63'
+INFO:root:delete_plant(): delete of employee successful for id '63'
+INFO:root:delete_plant(): attempting to delete employee with id '65'
+INFO:root:delete_plant(): delete of employee successful for id '65'
+INFO:root:delete_plant(): attempting to delete employee with id '66'
+INFO:root:delete_plant(): delete of employee successful for id '66'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -312,6 +368,7 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+<<<<<<< HEAD
 INFO:root:insert_plant(): attempting to insert data into plant table
 INFO:root:insert_plant(): insert into plant table successful
 ERROR:root:deletePlantsMenu(): 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '='901') WHERE name = 'bob'' at line 1
@@ -819,6 +876,10 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -827,8 +888,10 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
 INFO:root:insert_plant_with_type(): attempting to insert data into plant table
 INFO:root:insert_plant_with_type(): insert into plant table successful
+
 INFO:root:Inside the getAllPlantTypes - end
 INFO:root:Inside the getAllPriceRanges - end
 INFO:root:Inside the getAllPriceRanges - end
@@ -837,6 +900,7 @@ INFO:root:Inside the searchPlants - end
 INFO:root:Inside the makeOrders - end
 INFO:root:Inside the checkForOrders - end
 INFO:root:Inside the choiceForOrders - end
+
 INFO:root:getEmployees(): attempting to fetch employee with store id '1'
 INFO:root:getEmployees(): fetched employees data successfully for store id '1'
 INFO:root:Inside the getAllPlantTypes - end
@@ -855,3 +919,78 @@ INFO:root:deletePlantsMenu(): attempting to fetch all plants
 INFO:root:deletePlantsMenu(): fetched plants successfully
 INFO:root:delete_plant(): attempting to delete plant with id '206'
 INFO:root:delete_plant(): delete of plant successful for id '206'
+
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'kobe'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_plant_with_type(): attempting to insert data into plant table
+INFO:root:insert_plant_with_type(): insert into plant table successful
+INFO:root:updatePlantsMenu(): attempting to fetch all plants
+INFO:root:updatePlantsMenu(): fetched plants successfully
+INFO:root:updatePlantsMenu(): attempting to fetch all plants
+INFO:root:updatePlantsMenu(): fetched plants successfully
+INFO:root:update_plant(): attempting to update data for plant id '223'
+INFO:root:update_plant(): update of plant table successful for id '223'
+INFO:root:deletePlantsMenu(): attempting to fetch all plants
+INFO:root:deletePlantsMenu(): fetched plants successfully
+INFO:root:delete_plant(): attempting to delete plant with id '223'
+INFO:root:delete_plant(): delete of plant successful for id '223'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:delete_plant(): attempting to delete employee with id '1'
+INFO:root:delete_plant(): delete of employee successful for id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:update_supID(): attempting to update employee of id '2'
+INFO:root:update_supID(): updated employee data successfully for id '2'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:update_supID(): attempting to update employee of id '3'
+INFO:root:update_supID(): updated employee data successfully for id '3'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:delete_plant(): attempting to delete employee with id '3'
+INFO:root:delete_plant(): delete of employee successful for id '3'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:inEmployee(): attempting to fetch employee with username 'bobby1'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'johnn1'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'john1'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:inEmployee(): attempting to fetch employee with username 'bobby1'
+INFO:root:inEmployee(): fetch of employee successful
