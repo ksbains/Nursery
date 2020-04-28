@@ -21,11 +21,22 @@ def insert_plant(name, price, description, age):
 	conn = getConnection()
 	cursor = conn.cursor()
 	sql = "INSERT INTO plant(name, price, description, age) VALUES(%s,%s,%s,%s)"
-	cursor.execute(sql, (name, price, description, age))
+	cursor.execute(sql, (name, price, description, age)) #p_type_id
 	conn.commit()
 	cursor.close()
 	conn.close()
 	logging.info("insert_plant(): insert into plant table successful")
+
+def insert_plant_with_type(name, price, description, age, p_type_id):
+	logging.info("insert_plant_with_type(): attempting to insert data into plant table")
+	conn = getConnection()
+	cursor = conn.cursor()
+	sql = "INSERT INTO plant(name, price, description, age, p_type_id) VALUES(%s,%s,%s,%s,%s)"
+	cursor.execute(sql, (name, price, description, age, p_type_id))
+	conn.commit()
+	cursor.close()
+	conn.close()
+	logging.info("insert_plant_with_type(): insert into plant table successful")
 
 def insert_plant_type(name, description):
 	logging.info("insert_plant_type(): attempting to insert data into plant_type table")
@@ -48,11 +59,11 @@ def insert_store(number_of_lots, phone_no, address):
 	conn.commit()
 	cursor.close()
 	conn.close()
-	logging.info("insert_plant_type(): insert into store table successful")
+	logging.info("insert_store(): insert into store table successful")
 
 
 def insert_lot(store_id):
-	logging.info("insert_plant_type(): attempting to insert data into lot table")
+	logging.info("insert_lot(): attempting to insert data into lot table")
 	conn = getConnection()
 	cursor = conn.cursor()
 	sql = "INSERT INTO lot(store_id) VALUES(%s)"
@@ -60,11 +71,11 @@ def insert_lot(store_id):
 	conn.commit()
 	cursor.close()
 	conn.close()
-	logging.info("insert_plant_type(): insert into lot table successful")
+	logging.info("insert_lot(): insert into lot table successful")
 
 
 def insert_customer(cust_name, cust_username, cust_password, phone_no, address, email_id):
-	logging.info("insert_plant_type(): attempting to insert data into customer table")
+	logging.info("insert_customer(): attempting to insert data into customer table")
 	conn = getConnection()
 	cursor = conn.cursor()
 	hashed_password = hash_password(cust_password)
@@ -74,7 +85,7 @@ def insert_customer(cust_name, cust_username, cust_password, phone_no, address, 
 	conn.commit()
 	cursor.close()
 	conn.close()
-	logging.info("insert_plant_type(): insert into customer table successful")
+	logging.info("insert_customer(): insert into customer table successful")
 
 
 def insert_orders(store_id, cust_id, order_type, payment_status, price, delivery_address):
@@ -145,7 +156,7 @@ def update_plant(plant_id, name, price, description, age):
 
 
 def update_plant_type (type_id,type_name, description):
-	logging.info("update_plant(): attempting to update data for plant id '%s'", plant_id)
+	logging.info("update_plant_type(): attempting to update data for plant_type id '%s'", type_id)
 	conn = getConnection()
 	cursor = conn.cursor()
 	sql = "UPDATE plant_type SET type_name = %s, description = %s WHERE type_id = %s"
@@ -154,11 +165,11 @@ def update_plant_type (type_id,type_name, description):
 	conn.commit()
 	cursor.close()
 	conn.close()
-	logging.info("update_plant(): update of plant table successful for id '%s'", plant_id)
+	logging.info("update_plant_type(): update of plant_type table successful for id '%s'", type_id)
 
 
 def update_lot(lot_id, store_id):
-	logging.info("update_plant(): attempting to update data for plant id '%s'", plant_id)
+	logging.info("update_lot(): attempting to update data for lot id '%s'", lot_id)
 	conn = getConnection()
 	cursor = conn.cursor()
 	sql = "UPDATE lot SET store_id = %s WHERE lot_id = %s"
@@ -167,11 +178,11 @@ def update_lot(lot_id, store_id):
 	conn.commit()
 	cursor.close()
 	conn.close()
-	logging.info("update_plant(): update of plant table successful for id '%s'", plant_id)
+	logging.info("update_lot(): update of lot table successful for id '%s'", lot_id)
 
 
 def update_store(store_id, number_of_lots, phone_no, address):
-	logging.info("update_plant(): attempting to update data for plant id '%s'", plant_id)
+	logging.info("update_store(): attempting to update data for store id '%s'", store_id)
 	conn = getConnection()
 	cursor = conn.cursor()
 	sql = "UPDATE store SET number_of_lots = %s, phone_no = %s, address = %s WHERE store_id = %s"
@@ -180,7 +191,7 @@ def update_store(store_id, number_of_lots, phone_no, address):
 	conn.commit()
 	cursor.close()
 	conn.close()
-	logging.info("update_plant(): update of plant table successful for id '%s'", plant_id)
+	logging.info("update_store(): update of store table successful for id '%s'", store_id)
 
 
 def update_customer(cust_id, cust_name, cust_username, cust_password, phone_no, address, email_id):
@@ -360,6 +371,8 @@ def getPlantName(name, field):
 	logging.info("getPlantName(): attempting to fetch plant with name '%s'", name)
 	sql = "SELECT * FROM plant WHERE name = %s"
 	try:
+		conn = getConnection()
+		cursor = conn.cursor()
 		cursor.execute(sql, (name,))
 		result = cursor.fetchone()
 		switch={
@@ -368,6 +381,8 @@ def getPlantName(name, field):
 		"description": result[3],
 		"age": result[4]
 		}
+		cursor.close()
+		conn.close()
 		logging.info("getPlantName(): fetched plant data successfully for id '%s'", id)
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
@@ -395,7 +410,7 @@ def getPlantType(type_id, field):
 
 
 def getLot(lot_id, field):
-	logging.info("getPlantType(): attempting to fetch plant with type '%s'", type_id)
+	logging.info("getLot(): attempting to fetch lot with id '%s'", lot_id)
 	sql = "SELECT * FROM lot WHERE lot_id = %s"
 	try:
 		conn = getConnection()
@@ -407,7 +422,7 @@ def getLot(lot_id, field):
 		}
 		cursor.close()
 		conn.close()
-		logging.info("getPlantType(): fetched plant data successfully for type id '%s'", type_id)
+		logging.info("getPlantType(): fetched lot data successfully for lot id '%s'", lot_id)
 		return switch.get(field, "NOT FOUND")
 	except mysql.connector.Error as err:
 		logging.error("MYSQL ERROR: {}".format(err))

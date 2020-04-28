@@ -5,6 +5,7 @@ import ordersFlow
 import trendingFlow
 import nursery_store
 from pyfiglet import figlet_format
+from prettytable import PrettyTable
 import logging
 logging.basicConfig(filename="nursery.log", level=logging.DEBUG)
 
@@ -76,24 +77,6 @@ def employeeSignIn():
                 print("Incorrect Password!!! Try again")
                 employeeSignIn()
 
-def employeeManagerMainMenu(empID, storeID):
-        questions = [inquirer.List(
-                'employeeMain',
-                message="Select an option:",
-                choices=['Inventory', 'Manage Employees','Orders', 'Logout'],
-        ),]
-        answer = inquirer.prompt(questions)
-        if answer["employeeMain"] == "Inventory":
-                inventory(empID, storeID)
-        elif answer["employeeMain"] == "Manage Employees":
-                manageEmp(empID, storeID)
-        elif answer["employeeMain"] == "Orders":
-                orders(empID, storeID)
-        elif answer["employeeMain"] == "Logout":
-                employeeStart()
-        else:
-                print("ERROR!!! SHOULD NOT HIT THIS")
-
 def employeeCommonMainMenu(empID, storeID):
         questions = [inquirer.List(
                 'employeeMain',
@@ -158,16 +141,18 @@ def employeeManagerMainMenu(empID, storeID):
     questions = [inquirer.List(
                 'userType', 
                 message="What would you like to do?",
-                choices=['Employee Management', 'Inventory Management','Orders', 'Back'],),]
+                choices=['Employee Management', 'Inventory Management','Orders', 'Logout'],),]
     answer = inquirer.prompt(questions)
     if answer["userType"] == "Employee Management":
         empManMenu(empID, storeID)
     elif answer["userType"] == "Inventory Management":
         invManMenu(empID, storeID)
     elif answer["userType"] == "Orders":
-                orders(empID, storeID)
-    else:
+        orders(empID, storeID)
+    elif answer["userType"] == "Logout":
         employeeStart()
+    else:
+        print("ERROR!!! SHOULD NOT HIT THIS")
 
 def empManMenu(empID, storeID):
     questions = [inquirer.List(
@@ -185,7 +170,6 @@ def empManMenu(empID, storeID):
         employeeManagerMainMenu(empID, storeID)
 
 
-# Jasper's changes
 def hireEmployee(empID, storeID):
     # enter new hire information
     questions = [
@@ -209,11 +193,10 @@ def hireEmployee(empID, storeID):
     employeeStoreID  = storeID
     employeeManager  = empID
 
-    # insert_employee(store_id, supervisor_id)
     nursery.insert_employee(employeeName, employeeUsername, employeePassword,employeeStoreID, employeeStart, employeePhone_no, employeeJob, employeeManager)
     empManMenu(empID, storeID)
 
-# Jasper's changes
+
 def fireEmployee(empID, storeID):
 
     employees = nursery.getEmployees(storeID)
@@ -232,7 +215,7 @@ def fireEmployee(empID, storeID):
 
     empManMenu(empID, storeID)
 
-# Jasper's changes
+
 def promoteEmployee(empID, storeID):
 
     employees = nursery.getEmployees(storeID)
@@ -250,7 +233,7 @@ def promoteEmployee(empID, storeID):
 
     empManMenu(empID, storeID)
 
-# Jasper's changes
+
 def displayEmployees(employees):
     for employee in employees:
         print(employee[0], employee[1])
@@ -275,27 +258,65 @@ def invManMenu(empID, storeID):
         employeeManagerMainMenu(empID, storeID)
 
 def addPlantsMenu(empID, storeID):
+    plantList=[]
+    switch={
+        90: 'Fruit Trees', 
+        91: 'Holly Bushes', 
+        92: 'Privacy Trees',
+        93: 'Flowering Trees',
+        94: 'Flowering Shrubs',
+        95: 'Patio Trees',
+    }
+    sql = "SELECT p_type_id FROM plant"
+    try:
+        conn = getConnection()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        for row in result:
+            if row[0] in switch.keys():
+                plantTypeInfo=switch[row[0]]
+                plantPair = (row[0], plantTypeInfo)
+            plantList.append(plantPair)
+        cursor.close()
+        conn.close()
+    except mysql.connector.Error as err:
+        logging.error("addPlantsMenu(): {}".format(err))
+
     questions = [
         inquirer.Text('name', message="What's the plant name?"),
         inquirer.Text('price', message="What's the plant price?"),
         inquirer.Text('description', message="What's the plant description?"),
-        inquirer.Text('age', message="What's the plant age?"),]
+        inquirer.Text('age', message="What's the plant age?")]
     answers = inquirer.prompt(questions)
-    nursery.insert_plant(answers["name"], answers["price"], answers["description"], answers["age"])
-    #getplantName(name)
-    #insert into plant locator
-    #nursery.insert_plant_locator(store_id, lot_id, plant_id)
+    
+    plantKeys=[]
+    plantTypes=[]
+    for row in plantList:
+        plantKeys.append(row[0])
+        plantTypes.append(row[1])
+    
+    questions = [
+                inquirer.List('plant_type',
+                message="What's the plant type?",
+                choices=set(plantTypes),
+                ),]
+    answers2 = inquirer.prompt(questions)
+
+    if answers2['plant_type'] in switch.values():
+        plantTypeInfo = plantKeys[plantTypes.index(answers2['plant_type'])]
+    nursery.insert_plant_with_type(answers["name"], answers["price"], answers["description"], answers["age"], plantTypeInfo)
     print(answers["name"], "added!")
     invManMenu(empID, storeID)
 
 def deletePlantsMenu(empID, storeID):
     logging.info("deletePlantsMenu(): attempting to fetch all plants")
     plantDict={}
-    sql = "SELECT * FROM plant"#, plants_locator l WHERE l.store_id = %s"
+    sql = "SELECT * FROM plant"
     try:
         conn = getConnection()
         cursor = conn.cursor()
-        cursor.execute(sql) #, storeID)
+        cursor.execute(sql)
         result = cursor.fetchall()
         for row in result:
             plantDict[row[0]]=row[1]
@@ -304,9 +325,6 @@ def deletePlantsMenu(empID, storeID):
         logging.info("deletePlantsMenu(): fetched plants successfully")
     except mysql.connector.Error as err:
         logging.error("deletePlantsMenu(): {}".format(err))
-    #plantList=list(plantDict.values())
-    #plantList.append("All the Above")
-    #plantList.append("None of the Above")
     questions = [
                 inquirer.Checkbox('deletions',
                 message="What plants do you want to delete?",
@@ -362,17 +380,46 @@ def updatePlantsMenu(empID, storeID):
     print(answerList, "updated!")
     invManMenu(empID, storeID)
 
+def processPlantResult(plantResult):
+	plantDict = []
+	for row in plantResult:
+			record={
+				'plant_id' : row[0],
+				'name' : row[1],
+				'price' : row[2],
+				'description' : row[3],
+				'age' : row[4],
+				'p_type_id' : row[5],
+			}
+			plantDict.append(record)
+	return plantDict
+
 def showPlantsMenu(empID, storeID):
-    # sql = "SELECT p.name, p.price, p.description, p.age FROM plant p"#, plants_locator l WHERE l.store_id = %s"
-    # try:
-    #     cursor.execute(sql) #, storeID)
-    #     result = cursor.fetchall()
-    #     for row in result:
-    #         print(row)
-    # except mysql.connector.Error as err:
-    #     print("MYSQL ERROR: {}".format(err))
-    nursery.plants()
-    
+    sql = "SELECT * FROM plant"
+    switch={
+        90: 'Fruit Trees', 
+        91: 'Holly Bushes', 
+        92: 'Privacy Trees',
+        93: 'Flowering Trees',
+        94: 'Flowering Shrubs',
+        95: 'Patio Trees',
+    }
+    try:
+        conn = getConnection()
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        plantDict = processPlantResult(result)
+        plant_table = PrettyTable(['Plant Id', 'Name', 'Price', 'Description', 'Age', 'Type'])
+        for x in plantDict:
+            if x['p_type_id'] in switch.keys():
+                plantTypeInfo=switch[x['p_type_id']]
+            plant_table.add_row([x["plant_id"], x["name"], x["price"], x["description"], x["age"], plantTypeInfo])    		
+        print(plant_table)
+        cursor.close()
+        conn.close()
+    except mysql.connector.Error as err:
+            logging.error("showPlantsMenu(): {}".format(err))
     invManMenu(empID, storeID)
 
 def customerStart():
