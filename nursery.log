@@ -1579,3 +1579,13 @@ INFO:root:insert_employee(): attempting to insert data into employee table
 INFO:root:insert_employee(): insert into employee table successful
 INFO:root:query(): attempting to query DB with select, table, where, orderBy
 INFO:root:query(): queried DB successfully with select, table, where, orderyBy
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+ERROR:root:inEmployee(): 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:query(): attempting to query DB with select, table, where, orderBy
+INFO:root:query(): queried DB successfully with select, table, where, orderyBy
