@@ -13,7 +13,7 @@ def getConnection():
 		host="localhost",
 		user="root",
 		passwd="password",
-		database="Nursery"
+		database="nursery"
 	)
 	return conn
 
@@ -875,18 +875,6 @@ def initializeEmployee():
 
 
 def startup():
-	#EMPLOYEE
-	EmployeeName = "Bee"
-	EmployeeUserName = "killabee"
-	EmployeePassword = "password"
-	EmployeeStoreId = 1
-	EmployeeDOJ = "2000-01-25"
-	EmployeePhoneNo = "0123456789"
-	EmployeeDesignation = "Worker"
-
-
-
-	insert_employee(EmployeeName, EmployeeUserName, EmployeePassword, EmployeeStoreId, EmployeeDOJ, EmployeePhoneNo, EmployeeDesignation, None)
 
 	#insert_manager(Name, username, password, storeID, DOJ, phone_no)
 	insert_manager("Lebron James","lbj", "password", 1, "2020-01-26", "9876543210")
@@ -898,4 +886,4 @@ def startup():
 	insert_manager("Javale Mcgee","jm", "password", 7, "2020-01-26", "9876543210")
 
 	# Jasper's changes
-	initializeEmployee()
+	# initializeEmployee()

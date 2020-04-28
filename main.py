@@ -33,10 +33,7 @@ def mainMenu():
         ),]
         answer = inquirer.prompt(questions)
         if answer["userType"] == "Employee":
-                #employeeStart()
-                empID=1
-                storeID=1
-                employeeManagerMainMenu(empID, storeID)
+                employeeStart()
         elif answer["userType"] == "Customer":
                 customerStart()
         else:
@@ -850,7 +847,7 @@ def store(custID):
         customerMainMenu(custID)
 
 def startScript():
-        # nursery.startup()
+        nursery.startup()
         mainMenu()
 
 startScript()

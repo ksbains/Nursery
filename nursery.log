@@ -994,3 +994,234 @@ INFO:root:getAllOrders(): Attempting to fetch all orders
 INFO:root:getAllOrders(): fetched all orders successfully
 INFO:root:inEmployee(): attempting to fetch employee with username 'bobby1'
 INFO:root:inEmployee(): fetch of employee successful
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_customer(): attempting to insert data into customer table
+INFO:root:insert_customer(): insert into customer table successful
+INFO:root:inCustomer(): attempting to fetch customer with username 'j'
+INFO:root:inCustomer(): fetch of customer successful
+INFO:root:fetchStores(): Attempting to fetch address from stores
+INFO:root:fetchStores(): fetched address successfully
+INFO:root:fetchPlantsByPrice(): Attempting to fetch plants of given prices
+INFO:root:fetchPlantsByPrice(): fetched plants successfully
+INFO:root:Inside the choiceForOrders - end
+INFO:root:fetchPlants(): Attempting to fetch plants for given ids
+INFO:root:fetchPlants(): fetched plants successfully
+INFO:root:fetchStoreId(): Attempting to fetch store for address 'San Jose'
+INFO:root:fetchStoreId(): fetched address successfully
+INFO:root:saveOrderDetails(): Attempting to insert orders for customer '1'
+INFO:root:saveOrderDetails(): Attempting to insert items
+INFO:root:saveOrderDetails(): insert of order and item successful
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:fetchStores(): Attempting to fetch address from stores
+INFO:root:fetchStores(): fetched address successfully
+INFO:root:fetchAllPlants(): Attempting to fetch all plants
+INFO:root:fetchAllPlants(): fetched plants successfully
+INFO:root:Inside the choiceForOrders - end
+INFO:root:fetchPlants(): Attempting to fetch plants for given ids
+INFO:root:fetchPlants(): fetched plants successfully
+INFO:root:fetchStoreId(): Attempting to fetch store for address 'San Jose'
+INFO:root:fetchStoreId(): fetched address successfully
+INFO:root:saveOrderDetails(): Attempting to insert orders for customer '1'
+INFO:root:saveOrderDetails(): Attempting to insert items
+INFO:root:saveOrderDetails(): insert of order and item successful
+INFO:root:Inside the makeOrders - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:Inside the getAllPriceRanges - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the searchPlants - end
+INFO:root:getPlantsWithRating(): Attempting to fetch plants by rating
+INFO:root:getPlantsWithRating(): Fetched data successfully
+INFO:root:getPlantsOrderMost(): Attempting to fetch plants by most ordered
+INFO:root:getPlantsOrderMost(): Fetched data successfully
+INFO:root:fetchPlantTypes(): Attempting to fetch plant type names
+INFO:root:fetchPlantTypes(): fetched plant types successfully
+INFO:root:getTopPlantGivenType(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenType(): fetched data successfully
+INFO:root:fetchStores(): Attempting to fetch address from stores
+INFO:root:fetchStores(): fetched address successfully
+INFO:root:fetchStoreId(): Attempting to fetch store for address 'San Jose'
+INFO:root:fetchStoreId(): fetched address successfully
+INFO:root:getTopPlantGivenStore(): Attempting to fetch plants by type
+INFO:root:getTopPlantGivenStore(): fetched data successfully
+INFO:root:fetchStores(): Attempting to fetch address from stores
+INFO:root:fetchStores(): fetched address successfully
+INFO:root:Inside the searchPlants - end
+INFO:root:Inside the getPlantsFromLocation - end
+INFO:root:Inside the checkForOrders - end
+INFO:root:insert_customer(): attempting to insert data into customer table
+INFO:root:insert_customer(): insert into customer table successful
+INFO:root:inCustomer(): attempting to fetch customer with username 'k'
+INFO:root:inCustomer(): fetch of customer successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:delete_plant(): attempting to delete employee with id '8'
+INFO:root:delete_plant(): delete of employee successful for id '8'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:update_supID(): attempting to update employee of id '9'
+INFO:root:update_supID(): updated employee data successfully for id '9'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:insert_plant_with_type(): attempting to insert data into plant table
+INFO:root:insert_plant_with_type(): insert into plant table successful
+INFO:root:deletePlantsMenu(): attempting to fetch all plants
+INFO:root:deletePlantsMenu(): fetched plants successfully
+INFO:root:delete_plant(): attempting to delete plant with id '200'
+INFO:root:delete_plant(): delete of plant successful for id '200'
+INFO:root:delete_plant(): attempting to delete plant with id '201'
+INFO:root:delete_plant(): delete of plant successful for id '201'
+INFO:root:delete_plant(): attempting to delete plant with id '202'
+INFO:root:delete_plant(): delete of plant successful for id '202'
+INFO:root:delete_plant(): attempting to delete plant with id '203'
+INFO:root:delete_plant(): delete of plant successful for id '203'
+INFO:root:delete_plant(): attempting to delete plant with id '204'
+INFO:root:delete_plant(): delete of plant successful for id '204'
+INFO:root:delete_plant(): attempting to delete plant with id '205'
+INFO:root:delete_plant(): delete of plant successful for id '205'
+INFO:root:updatePlantsMenu(): attempting to fetch all plants
+INFO:root:updatePlantsMenu(): fetched plants successfully
+INFO:root:update_plant(): attempting to update data for plant id '208'
+INFO:root:update_plant(): update of plant table successful for id '208'
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:updateCurrentOrder(): Attempting to update order for id '1' and status 'Dispatched'
+INFO:root:updateCurrentOrder(): updated successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:updateDeliveredOrder(): Attempting to update order for id '2' and status 'Completed'
+INFO:root:updateDeliveredOrder(): updated successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_manager(): attempting to insert data into employee table
+INFO:root:insert_manager(): insert into employee table successful
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:inEmployee(): attempting to fetch employee with username 'k'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getAllOrders(): Attempting to fetch all orders
+INFO:root:getAllOrders(): fetched all orders successfully
+INFO:root:inEmployee(): attempting to fetch employee with username 'lbj'
+INFO:root:inEmployee(): fetch of employee successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:delete_plant(): attempting to delete employee with id '8'
+INFO:root:delete_plant(): delete of employee successful for id '8'
+INFO:root:insert_employee(): attempting to insert data into employee table
+INFO:root:insert_employee(): insert into employee table successful
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:update_supID(): attempting to update employee of id '9'
+INFO:root:update_supID(): updated employee data successfully for id '9'
+INFO:root:getEmployees(): attempting to fetch employee with store id '1'
+INFO:root:getEmployees(): fetched employees data successfully for store id '1'
+INFO:root:update_supID(): attempting to update employee of id '1'
+INFO:root:update_supID(): updated employee data successfully for id '1'
+INFO:root:insert_plant_with_type(): attempting to insert data into plant table
+INFO:root:insert_plant_with_type(): insert into plant table successful
+INFO:root:deletePlantsMenu(): attempting to fetch all plants
+INFO:root:deletePlantsMenu(): fetched plants successfully
+INFO:root:delete_plant(): attempting to delete plant with id '200'
+INFO:root:delete_plant(): delete of plant successful for id '200'
+INFO:root:delete_plant(): attempting to delete plant with id '201'
+INFO:root:delete_plant(): delete of plant successful for id '201'
+INFO:root:delete_plant(): attempting to delete plant with id '202'
+INFO:root:delete_plant(): delete of plant successful for id '202'
+INFO:root:delete_plant(): attempting to delete plant with id '203'
+INFO:root:delete_plant(): delete of plant successful for id '203'
+INFO:root:delete_plant(): attempting to delete plant with id '204'
+INFO:root:delete_plant(): delete of plant successful for id '204'
+INFO:root:delete_plant(): attempting to delete plant with id '205'
+INFO:root:delete_plant(): delete of plant successful for id '205'
+INFO:root:delete_plant(): attempting to delete plant with id '207'
+INFO:root:delete_plant(): delete of plant successful for id '207'
+INFO:root:delete_plant(): attempting to delete plant with id '208'
+INFO:root:delete_plant(): delete of plant successful for id '208'
+INFO:root:delete_plant(): attempting to delete plant with id '210'
+INFO:root:delete_plant(): delete of plant successful for id '210'
+INFO:root:delete_plant(): attempting to delete plant with id '211'
+INFO:root:delete_plant(): delete of plant successful for id '211'
+INFO:root:delete_plant(): attempting to delete plant with id '212'
+INFO:root:delete_plant(): delete of plant successful for id '212'
+INFO:root:delete_plant(): attempting to delete plant with id '213'
+INFO:root:delete_plant(): delete of plant successful for id '213'
+INFO:root:delete_plant(): attempting to delete plant with id '215'
+INFO:root:delete_plant(): delete of plant successful for id '215'
+INFO:root:delete_plant(): attempting to delete plant with id '216'
+INFO:root:delete_plant(): delete of plant successful for id '216'
+INFO:root:delete_plant(): attempting to delete plant with id '217'
+INFO:root:delete_plant(): delete of plant successful for id '217'
+INFO:root:delete_plant(): attempting to delete plant with id '219'
+INFO:root:delete_plant(): delete of plant successful for id '219'
+INFO:root:delete_plant(): attempting to delete plant with id '221'
+INFO:root:delete_plant(): delete of plant successful for id '221'
+INFO:root:updatePlantsMenu(): attempting to fetch all plants
+INFO:root:updatePlantsMenu(): fetched plants successfully
+INFO:root:update_plant(): attempting to update data for plant id '223'
+INFO:root:update_plant(): update of plant table successful for id '223'
